@@ -1,10 +1,12 @@
 package com.ssivulskiy.stegomaster.activities
 
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.view.View
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -21,11 +23,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val toolbar = findViewById(R.id.toolbar) as Toolbar?
         setSupportActionBar(toolbar)
-
-        val fab = findViewById(R.id.fab) as FloatingActionButton?
-        fab?.setOnClickListener({ view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show() })
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
         val toggle = ActionBarDrawerToggle(
@@ -33,10 +33,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.setDrawerListener(toggle)
         toggle.syncState()
 
-        supportFragmentManager.beginTransaction().replace(R.id.container, KoxaJaoFragment()).commit()
+        replaceFragemnt(StegoLsbFragment.newInstance())
+        setToolbarTitle(R.string.lsb_method)
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView?
-        navigationView?.setNavigationItemSelectedListener(this)
+        navigationView?.apply {
+            setNavigationItemSelectedListener(this@MainActivity)
+            setCheckedItem(R.id.nav_lsb)
+        }
+
     }
 
     override fun onBackPressed() {
@@ -62,23 +67,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onOptionsItemSelected(item)
     }
 
+
+    private fun setToolbarTitle(@StringRes resId : Int) {
+        supportActionBar.apply {
+            title = getString(resId)
+        }
+    }
+
+    private fun replaceFragemnt(fragment: Fragment) {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit()
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+        val fragment : Fragment;
+        when(id) {
+            R.id.nav_lsb -> {
+                fragment = StegoLsbFragment.newInstance()
+                setToolbarTitle(R.string.lsb_method)
+            }
+            R.id.nav_koxa_jao -> {
+                fragment = KoxaJaoFragment.newInstanse()
+                setToolbarTitle(R.string.koxa_jao_method)
 
-        if (id == R.id.nav_camera) {
-
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            }
+            else -> {
+                fragment = StegoLsbFragment.newInstance()
+            }
         }
+
+        replaceFragemnt(fragment)
+
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout?
         drawer?.closeDrawer(GravityCompat.START)

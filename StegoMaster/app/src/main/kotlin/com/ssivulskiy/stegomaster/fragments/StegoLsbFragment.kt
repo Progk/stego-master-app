@@ -15,6 +15,7 @@ import android.widget.ImageView
 import com.squareup.picasso.Picasso
 
 import com.ssivulskiy.stegomaster.R
+import com.ssivulskiy.stegomaster.core.LSBStegoMethod
 import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_stego.*
 import org.jetbrains.anko.support.v4.toast
@@ -29,7 +30,7 @@ class StegoLsbFragment : Fragment() {
     private val LOG_TAG = javaClass.name
 
     private val FILE_NAME_IN = "snowman.jpg"
-    private val FILE_NAME_OUT = "snow_stego_koxa.png"
+    private val FILE_NAME_OUT = "snow_stego_lsb.png"
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,29 +52,38 @@ class StegoLsbFragment : Fragment() {
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
-
-        val msg = decodeTextLSB(fileIn!!)
+        val stegoLsbMethod = LSBStegoMethod()
+        val msg = stegoLsbMethod.decode(fileIn!!)
         toast(msg)
-        Log.d(LOG_TAG, "Message: $msg")
     }
 
     private fun codeButtonClick() {
-        Log.d(LOG_TAG, "codeClick")
-        var finish = false
-//        val msg = "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiop"
         val msg = "qwer"
-        val msgByte = (msg.length.toString() + msg).toByteArray()
-        Log.d(LOG_TAG, msg.length.toString())
-        Log.d(LOG_TAG, "Source data: ${msgByte.toList()}")
+
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
-        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
-        val file = File(dir, FILE_NAME_OUT)
-        val fOut = FileOutputStream(file);
 
-        codeTextLSB(fileIn!!, file, msg)
-        Picasso.with(context).load(file).into(imageView)
+        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
+        val fileOut = File(dir, FILE_NAME_OUT)
+
+        val stegoLsbMethod = LSBStegoMethod()
+
+        stegoLsbMethod.code(msg, fileIn!!, fileOut)
+
+        Picasso.with(context).load(fileOut).into(imageView)
     }
 
+    companion object {
+        fun newInstance() : StegoLsbFragment {
+            var args = Bundle()
+
+            var fragment = StegoLsbFragment()
+            fragment.apply {
+                arguments = args
+            }
+
+            return fragment
+        }
+    }
 
 }

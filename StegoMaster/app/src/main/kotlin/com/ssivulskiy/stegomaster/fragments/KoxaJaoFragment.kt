@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
+import com.ssivulskiy.stegomaster.core.KoxaJaoStegoMethod
 import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_stego.*
 import org.jetbrains.anko.support.v4.toast
@@ -24,6 +25,7 @@ class KoxaJaoFragment : Fragment() {
 
     private val FILE_NAME_IN = "snowman.jpg"
     private val FILE_NAME_OUT = "snow_stego_koxa_jp.jpeg"
+
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,29 +44,29 @@ class KoxaJaoFragment : Fragment() {
 
     private fun decodeButtonClick() {
         Log.d(LOG_TAG, "decodeClick")
+
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
-        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
 
-        val msg = decodeKoxaJao(fileIn!!)
+        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
+        val koxaJaoStego = KoxaJaoStegoMethod()
+        val msg = koxaJaoStego.decode(fileIn!!)
         toast(msg)
-        Log.d(LOG_TAG, "Message: $msg")
     }
 
     private fun codeButtonClick() {
-        Log.d(LOG_TAG, "codeClick")
-        var finish = false
         val msg = "hello world"
-        val msgByte = (msg.length.toString() + msg).toByteArray()
-        Log.d(LOG_TAG, msg.length.toString())
-        Log.d(LOG_TAG, "Source data: ${msgByte.toList()}")
+
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
-        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
-        val file = File(dir, FILE_NAME_OUT)
-        val fOut = FileOutputStream(file);
 
-        codeKoxaJao(fileIn!!, file, msg)
+        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
+        val fileOut = File(dir, FILE_NAME_OUT)
+
+        val koxaJaoStego = KoxaJaoStegoMethod()
+
+        koxaJaoStego.code(msg, fileIn!!, fileOut)
+
 //        val dcpCof = arrayOfNulls<IntArray>(8)
 //
 //        dcpCof[0] = intArrayOf(79, 75, 79, 82, 82, 86, 94, 94)
@@ -80,7 +82,20 @@ class KoxaJaoFragment : Fragment() {
 //        val source = dcpBack(cof)
 
 
-        Picasso.with(context).load(file).into(imageView)
+        Picasso.with(context).load(fileOut).into(imageView)
+    }
+
+    companion object {
+        fun newInstanse() : KoxaJaoFragment {
+            var args = Bundle()
+
+            var fragment = KoxaJaoFragment()
+            fragment.apply {
+                arguments = args
+            }
+
+            return fragment
+        }
     }
 
 
