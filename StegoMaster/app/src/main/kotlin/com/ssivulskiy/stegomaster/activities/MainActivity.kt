@@ -13,7 +13,8 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import com.ssivulskiy.stegomaster.R
-import com.ssivulskiy.stegomaster.fragments.StegoFragment
+import com.ssivulskiy.stegomaster.fragments.KoxaJaoFragment
+import com.ssivulskiy.stegomaster.fragments.StegoLsbFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.setDrawerListener(toggle)
         toggle.syncState()
 
-        supportFragmentManager.beginTransaction().replace(R.id.container, StegoFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, KoxaJaoFragment()).commit()
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView?
         navigationView?.setNavigationItemSelectedListener(this)

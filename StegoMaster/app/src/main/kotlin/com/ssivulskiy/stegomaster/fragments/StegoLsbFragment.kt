@@ -24,12 +24,12 @@ import java.io.FileOutputStream
 /**
  * @author Sivulskiy Sergey
  */
-class StegoFragment : Fragment() {
+class StegoLsbFragment : Fragment() {
 
     private val LOG_TAG = javaClass.name
 
     private val FILE_NAME_IN = "snowman.jpg"
-    private val FILE_NAME_OUT = "snow_stego.png"
+    private val FILE_NAME_OUT = "snow_stego_koxa.png"
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,7 +60,8 @@ class StegoFragment : Fragment() {
     private fun codeButtonClick() {
         Log.d(LOG_TAG, "codeClick")
         var finish = false
-        val msg = "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiop"
+//        val msg = "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiop"
+        val msg = "qwer"
         val msgByte = (msg.length.toString() + msg).toByteArray()
         Log.d(LOG_TAG, msg.length.toString())
         Log.d(LOG_TAG, "Source data: ${msgByte.toList()}")
