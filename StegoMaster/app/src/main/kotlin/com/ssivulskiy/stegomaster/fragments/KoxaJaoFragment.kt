@@ -55,7 +55,8 @@ class KoxaJaoFragment : Fragment() {
     }
 
     private fun codeButtonClick() {
-        val msg = "hello world"
+//        val msg = "I've never been particularly fond of spin classes, as they eschew all the things I enjoy about using a stationary bike: The ability to set my own pace, listen to my music and maybe even dip into a good book while I pedal. But I can understand the appeal of a spin class, as the presence of an instructor can push you out of your comfort zone and ensure that you get a real workout. So it would seem that IMAXShift sits somewhere in the middle, combining an intense audio and visual experience to entertain you while a dedicated instructor gives orders. The problem is, there might have been just little too much going on for me to enjoy any one aspect to the fullest."
+        val msg = "123456789"
 
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
@@ -86,7 +87,7 @@ class KoxaJaoFragment : Fragment() {
     }
 
     companion object {
-        fun newInstanse() : KoxaJaoFragment {
+        fun newInstance() : KoxaJaoFragment {
             var args = Bundle()
 
             var fragment = KoxaJaoFragment()

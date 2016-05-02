@@ -16,7 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.ssivulskiy.stegomaster.R
 import com.ssivulskiy.stegomaster.fragments.KoxaJaoFragment
-import com.ssivulskiy.stegomaster.fragments.StegoLsbFragment
+import com.ssivulskiy.stegomaster.fragments.LsbFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.setDrawerListener(toggle)
         toggle.syncState()
 
-        replaceFragemnt(StegoLsbFragment.newInstance())
+        replaceFragemnt(LsbFragment.newInstance())
         setToolbarTitle(R.string.lsb_method)
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView?
@@ -87,16 +87,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragment : Fragment;
         when(id) {
             R.id.nav_lsb -> {
-                fragment = StegoLsbFragment.newInstance()
+                fragment = LsbFragment.newInstance()
                 setToolbarTitle(R.string.lsb_method)
             }
             R.id.nav_koxa_jao -> {
-                fragment = KoxaJaoFragment.newInstanse()
+                fragment = KoxaJaoFragment.newInstance()
                 setToolbarTitle(R.string.koxa_jao_method)
 
             }
             else -> {
-                fragment = StegoLsbFragment.newInstance()
+                fragment = LsbFragment.newInstance()
             }
         }
 

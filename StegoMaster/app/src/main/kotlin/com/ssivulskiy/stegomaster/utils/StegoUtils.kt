@@ -6,19 +6,20 @@ import java.io.File
 
 fun Array2dOfInt(i: Int, j: Int): Array<IntArray> = Array(i) { IntArray(j) }
 
-fun prepareMessage(msg : String) : List<Byte> {
+fun makeStegoMessage(msg : String) : List<Byte> {
 
-    val lengthBinary = String.format("%16s", Integer.toBinaryString(msg.length)).replace(' ', '0')
+    val l = msg.length.and(0x0000FF00).shr(8).toByte()
+    val r = msg.length.and(0x000000FF).toByte()
 
-    val l1 = java.lang.Byte.parseByte(lengthBinary.substring(0, 8), 2)
-    val l2 = java.lang.Byte.parseByte(lengthBinary.substring(8, 16), 2)
-
-    val msgByte = mutableListOf(l1, l2)
+    val msgByte = mutableListOf(l, r)
 
     msg.toByteArray().forEach { msgByte.add(it) }
 
     return msgByte
 }
+
+fun calculateMessageLength(arr : List<Byte>) : Int = arr[0].toInt().and(0x000000FF).shl(8) or arr[1].toInt().and(0x000000FF)
+
 
 fun DCT(arr: Array<IntArray>): Array<IntArray> {
     var dctCof = Array2dOfInt(arr.size, arr.size)
@@ -84,6 +85,32 @@ fun reverseDCT(dcpCof: Array<IntArray>): Array<IntArray> {
 
     }
     return arr;
+}
+
+fun normDCT(arr: Array<IntArray>): Array<IntArray> {
+    var min = Int.MAX_VALUE
+    var max = Int.MIN_VALUE
+
+    for (i in 0..arr.size - 1) {
+        for (j in 0..arr[i].size - 1) {
+            if (arr[i][j] > max)
+                max = arr[i][j]
+
+            if (arr[i][j] < min) {
+                min = arr[i][j]
+            }
+        }
+    }
+
+    val normArr = Array2dOfInt(arr.size, arr[0].size)
+
+    for (i in 0..normArr.size - 1) {
+        for (j in 0..normArr[i].size - 1) {
+            normArr[i][j] = 255.times(arr[i][j] + Math.abs(min)).div(max + Math.abs(min)).and(0x000000FF)
+        }
+    }
+
+    return normArr
 }
 
 

@@ -1,8 +1,5 @@
 package com.ssivulskiy.stegomaster.fragments
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.Fragment
@@ -10,22 +7,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import com.squareup.picasso.Picasso
-
 import com.ssivulskiy.stegomaster.R
 import com.ssivulskiy.stegomaster.core.LSBStegoMethod
-import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_stego.*
 import org.jetbrains.anko.support.v4.toast
 import java.io.File
-import java.io.FileOutputStream
 
 /**
  * @author Sivulskiy Sergey
  */
-class StegoLsbFragment : Fragment() {
+class LsbFragment : Fragment() {
 
     private val LOG_TAG = javaClass.name
 
@@ -58,7 +50,8 @@ class StegoLsbFragment : Fragment() {
     }
 
     private fun codeButtonClick() {
-        val msg = "qwer"
+//        val msg = "qwer"
+        val msg = "I've never been particularly fond of spin classes, as they eschew all the things I enjoy about using a stationary bike: The ability to set my own pace, listen to my music and maybe even dip into a good book while I pedal. But I can understand the appeal of a spin class, as the presence of an instructor can push you out of your comfort zone and ensure that you get a real workout. So it would seem that IMAXShift sits somewhere in the middle, combining an intense audio and visual experience to entertain you while a dedicated instructor gives orders. The problem is, there might have been just little too much going on for me to enjoy any one aspect to the fullest."
 
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
@@ -74,10 +67,10 @@ class StegoLsbFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() : StegoLsbFragment {
+        fun newInstance() : LsbFragment {
             var args = Bundle()
 
-            var fragment = StegoLsbFragment()
+            var fragment = LsbFragment()
             fragment.apply {
                 arguments = args
             }

@@ -4,10 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
-import com.ssivulskiy.stegomaster.utils.getBitAtPos
-import com.ssivulskiy.stegomaster.utils.prepareMessage
-import com.ssivulskiy.stegomaster.utils.setOneAtPos
-import com.ssivulskiy.stegomaster.utils.setZeroAtPos
+import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
@@ -18,7 +15,7 @@ class LSBStegoMethod() {
     private var mUsedBit = 1
 
     fun code(msg : String, inFile : File, outFile : File) {
-        val msgByte = prepareMessage(msg)
+        val msgByte = makeStegoMessage(msg)
 
         val options = BitmapFactory.Options().apply {
             inMutable = true
@@ -114,7 +111,7 @@ class LSBStegoMethod() {
                         byte = 0
                         byteBit = 7
                         if (msgSize == -1 && msgByte.size == 2) {
-                            msgSize = msgByte[0].toInt().shl(8).or(msgByte[1].toInt())
+                            msgSize = calculateMessageLength(msgByte)
                             msgByte.clear()
                             Log.d(LOG_TAG, "Message size: $msgSize")
                         }
