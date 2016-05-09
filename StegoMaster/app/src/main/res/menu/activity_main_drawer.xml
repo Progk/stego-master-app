@@ -9,9 +9,19 @@
             android:title="@string/lsb_method"/>
 
         <item
+            android:id="@+id/nav_lsb_perm"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/lsb_perm_method"/>
+
+        <item
             android:id="@+id/nav_koxa_jao"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/koxa_jao_method"/>
+
+        <item
+            android:id="@+id/nav_quant"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/quantization_method"/>
 
     </group>
 

@@ -1,9 +1,5 @@
 package com.ssivulskiy.stegomaster.utils
 
-import android.graphics.BitmapFactory
-import android.util.Log
-import java.io.File
-
 fun Array2dOfInt(i: Int, j: Int): Array<IntArray> = Array(i) { IntArray(j) }
 
 fun makeStegoMessage(msg : String) : List<Byte> {

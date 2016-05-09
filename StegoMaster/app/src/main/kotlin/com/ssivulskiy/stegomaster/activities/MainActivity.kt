@@ -17,6 +17,8 @@ import android.view.MenuItem
 import com.ssivulskiy.stegomaster.R
 import com.ssivulskiy.stegomaster.fragments.KoxaJaoFragment
 import com.ssivulskiy.stegomaster.fragments.LsbFragment
+import com.ssivulskiy.stegomaster.fragments.LsbPermutationFragment
+import com.ssivulskiy.stegomaster.fragments.QuantizationFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -94,6 +96,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 fragment = KoxaJaoFragment.newInstance()
                 setToolbarTitle(R.string.koxa_jao_method)
 
+            }
+            R.id.nav_lsb_perm -> {
+                fragment = LsbPermutationFragment.newInstance()
+                setToolbarTitle(R.string.lsb_perm_method)
+            }
+            R.id.nav_quant -> {
+                fragment = QuantizationFragment.newInstance()
+                setToolbarTitle(R.string.quantization_method)
             }
             else -> {
                 fragment = LsbFragment.newInstance()

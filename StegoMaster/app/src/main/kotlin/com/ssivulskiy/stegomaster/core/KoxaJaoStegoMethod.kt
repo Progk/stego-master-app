@@ -8,14 +8,15 @@ import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class KoxaJaoStegoMethod() {
+class KoxaJaoStegoMethod() : IStegoMethod {
+
 
     private val LOG_TAG = javaClass.simpleName
 
     var mCoef1 = Coefficient(3, 4)
     var mCoef2 = Coefficient(4, 3)
 
-    var P = 25
+    var P = 15
 
     var mMatrixSize = 8 //N
 
@@ -25,9 +26,9 @@ class KoxaJaoStegoMethod() {
 
     var mCompressQuality = 100
 
-    fun code(msg : String, inFile : File, outFile : File) {
+    override fun code(msgByte : List<Byte>, inFile : File, outFile : File) {
 
-        val msgByte = makeStegoMessage(msg)
+//        val msgByte = makeStegoMessage(msg)
         val options = BitmapFactory.Options().apply {
             inMutable = true
         }
@@ -123,15 +124,15 @@ class KoxaJaoStegoMethod() {
 
 
 
-    fun decode(file : File) : String {
+    override fun decode(file : File) : List<Byte> {
         var bitmap = BitmapFactory.decodeFile(file.absolutePath)
         val msgByte = mutableListOf<Byte>()
         var byte: Byte = 0;
         var byteBit = 7
         var msgSize = -1;
 
-        loop@for (y in 0..(bitmap.height - 1) step mMatrixSize) {
-            for (x in 0..(bitmap.width - 1) step mMatrixSize) {
+        loop@for (y in 0..bitmap.height - 1 step mMatrixSize) {
+            for (x in 0..bitmap.width - 1 step mMatrixSize) {
                 val arr = Array2dOfInt(mMatrixSize, mMatrixSize)
 
                 for (i in 0..arr.size - 1) {
@@ -148,7 +149,7 @@ class KoxaJaoStegoMethod() {
                     byte = 0
                     byteBit = 7
                     if (msgSize == -1 && msgByte.size == 2) {
-                        msgSize = calculateMessageLength(msgByte)
+                        msgSize = decodeMsgSize(msgByte)
                         msgByte.clear()
                         Log.d(LOG_TAG, "Message size: $msgSize")
                     }
@@ -168,10 +169,11 @@ class KoxaJaoStegoMethod() {
             }
         }
 
-        val msg = String(msgByte.toByteArray())
-        Log.d(LOG_TAG, "Message: $msg")
+        return msgByte
+    }
 
-        return msg
+    override fun decodeMsgSize(msg: List<Byte>): Int {
+        return calculateMessageLength(msg)
     }
 
     private fun createStegoPixel(sourcePixel : Int, stegoColor : Int) : Int {

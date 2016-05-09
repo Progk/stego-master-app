@@ -6,7 +6,9 @@
 
     <string name="action_settings">Settings</string>
     <string name="lsb_method">LSB Method</string>
+    <string name="lsb_perm_method">LSB Permutation Method</string>
     <string name="koxa_jao_method">Koxa Jao Method</string>
+    <string name="quantization_method">Quantization Method</string>
 
 
 </resources>
