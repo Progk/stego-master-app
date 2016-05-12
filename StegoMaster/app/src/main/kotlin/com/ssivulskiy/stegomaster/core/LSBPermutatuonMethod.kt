@@ -18,8 +18,8 @@ class LSBPermutatuonMethod : LSBStegoMethod() {
     )
 
 
-    override fun code(msg: List<Byte>, inFile: File, outFile: File) {
-        val permutationByteList = permutation(msg)
+    override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
+        val permutationByteList = permutation(msgByte)
         super.code(permutationByteList, inFile, outFile)
     }
 

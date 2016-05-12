@@ -11,3 +11,4 @@ fun Byte.setZeroAtPos(pos : Int) : Byte {
 fun Byte.getBitAtPos(pos : Int) : Byte {
     return (this.toInt().shr(pos).and(1)).toByte()
 }
+

@@ -15,10 +15,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import com.ssivulskiy.stegomaster.R
-import com.ssivulskiy.stegomaster.fragments.KoxaJaoFragment
-import com.ssivulskiy.stegomaster.fragments.LsbFragment
-import com.ssivulskiy.stegomaster.fragments.LsbPermutationFragment
-import com.ssivulskiy.stegomaster.fragments.QuantizationFragment
+import com.ssivulskiy.stegomaster.fragments.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -104,6 +101,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_quant -> {
                 fragment = QuantizationFragment.newInstance()
                 setToolbarTitle(R.string.quantization_method)
+            }
+            R.id.nav_lsb_interval -> {
+                fragment = LsbIntervalFragment.newInstance()
+                setToolbarTitle(R.string.lsb_interval_method)
             }
             else -> {
                 fragment = LsbFragment.newInstance()

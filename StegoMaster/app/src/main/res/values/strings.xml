@@ -9,6 +9,7 @@
     <string name="lsb_perm_method">LSB Permutation Method</string>
     <string name="koxa_jao_method">Koxa Jao Method</string>
     <string name="quantization_method">Quantization Method</string>
+    <string name="lsb_interval_method">LSB Interval Method</string>
 
 
 </resources>

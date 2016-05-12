@@ -10,7 +10,6 @@ import java.io.FileOutputStream
 
 class KoxaJaoStegoMethod() : IStegoMethod {
 
-
     private val LOG_TAG = javaClass.simpleName
 
     var mCoef1 = Coefficient(3, 4)

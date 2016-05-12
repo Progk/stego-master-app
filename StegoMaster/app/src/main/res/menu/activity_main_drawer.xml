@@ -14,6 +14,11 @@
             android:title="@string/lsb_perm_method"/>
 
         <item
+            android:id="@+id/nav_lsb_interval"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/lsb_interval_method"/>
+
+        <item
             android:id="@+id/nav_koxa_jao"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/koxa_jao_method"/>
