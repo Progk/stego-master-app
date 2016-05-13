@@ -16,7 +16,7 @@ class QuantizationStegoMethod() : IStegoMethod {
     var mQuantizationTable = Array(QUANT_TABLE_SIZE, { 0 })
 
     init {
-        val s = "qwerty1234stegoqwerty1234stegoqwerty1234stegoqwerty1234steg756".toByteArray()
+        val s = "awerty1234stegoqwerty1234stegoqwerty1234stegoqwerty1234steg75a".toByteArray()
         var k = 0
         for (i in 0..mQuantizationTable.size - 1) {
             mQuantizationTable[i] = s[i % 8].getBitAtPos(k).toInt()
@@ -58,7 +58,7 @@ class QuantizationStegoMethod() : IStegoMethod {
                 var offsetR = 0
                 var offsetL = 0
                 if (getQuantElement(diff) != value) {
-                    for (i in diff + 255..QUANT_TABLE_SIZE - 1) {
+                    for (i in diff + 255 + 1..QUANT_TABLE_SIZE - 1) {
                         offsetR++
                         if (mQuantizationTable[i] == value) {
                             break
@@ -71,25 +71,24 @@ class QuantizationStegoMethod() : IStegoMethod {
                         }
                     }
 
-//                    val offset = Math.min(offsetL, offsetR)
-//                    if (blueB + offset < 255) {
-//                        blueA = blueB + offset
-//                    } else {
-//                        blueB = blueA - offset
-//                    }
-
-                    if (offsetR < offsetL) {
-                        if (blueB + offsetR < 255) {
-                            blueA = blueB + offsetR
-                            blueB = blueA - offsetR
-                        } else {
-                            blueB -= offsetR
+                    if (offsetL < offsetR) {
+                        var diff = offsetL
+                        while (diff > 0) {
+                            if (blueB + 1 < 255) {
+                                blueB++
+                            } else {
+                                blueA--
+                            }
+                            diff--;
                         }
                     } else {
-                        if (blueA + offsetL < 255) {
-                            blueB = blueA + offsetL
-                        } else {
-                            blueA += blueB - offsetL
+                        var diff = offsetR
+                        while (diff > 0) {
+                            if (blueA + 1 < 255)
+                                blueA++
+                            else
+                                blueB++
+                            diff--
                         }
                     }
 
@@ -98,9 +97,8 @@ class QuantizationStegoMethod() : IStegoMethod {
 
                     bitmap.setPixel(x, y, pixelA)
                     bitmap.setPixel(x + 1, y, pixelB)
-//
-                }
 
+                }
                 byteBit--;
 
             }
@@ -156,7 +154,6 @@ class QuantizationStegoMethod() : IStegoMethod {
                 byteBit--
             }
         }
-
         return msgByte
     }
 

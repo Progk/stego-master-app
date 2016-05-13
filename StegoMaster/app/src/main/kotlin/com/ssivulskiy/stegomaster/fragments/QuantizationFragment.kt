@@ -53,9 +53,10 @@ class QuantizationFragment : Fragment() {
     }
 
     private fun codeButtonClick() {
-        val msg = "1234567"
+//        val msg = "1234567"
+//        val msg = "7"
 //        val msg = "ITMO University is a large state university in Saint Petersburg and is one of Russias National Research Universities. ITMO University is one of 15 Russian universities that were selected to participate in Russian Academic Excellence Project 5100 by the government of the Russian Federation to improve their international competitiveness among the world’s leading research and educational"
-//        val msg = "Android is a mobile operating system (OS) currently developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. Android's user interface is mainly based on direct manipulation, using touch gestures that loosely correspond to real-world actions, such as swiping, tapping and pinching, to manipulate on-screen objects, along with a virtual keyboard for text input. In addition to touchscreen devices, Google has further developed Android TV for televisions, Android Auto for cars, and Android Wear for wrist watches, each with a specialized user interface. Variants of Android are also used on notebooks, game consoles, digital cameras, and other electronics."
+        val msg = "Android is a mobile operating system (OS) currently developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. Android's user interface is mainly based on direct manipulation, using touch gestures that loosely correspond to real-world actions, such as swiping, tapping and pinching, to manipulate on-screen objects, along with a virtual keyboard for text input. In addition to touchscreen devices, Google has further developed Android TV for televisions, Android Auto for cars, and Android Wear for wrist watches, each with a specialized user interface. Variants of Android are also used on notebooks, game consoles, digital cameras, and other electronics."
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
 
