@@ -25,7 +25,7 @@ class KoxaJaoFragment : Fragment() {
     private val LOG_TAG = javaClass.name
 
     private val FILE_NAME_IN = "cars.jpg"
-    private val FILE_NAME_OUT = "cars_stego_koxa_jp.jpeg"
+    private val FILE_NAME_OUT = "cars_stego_koxa_jao.jpeg"
 
 
 
@@ -55,12 +55,43 @@ class KoxaJaoFragment : Fragment() {
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
         toast(stringMsg)
+        calculate()
+    }
+
+    fun calculate() {
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        dir = File(dir, "stego")
+        val fileOut = File(dir, FILE_NAME_OUT)
+        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
+        var emptyBitmap = BitmapFactory.decodeFile(fileIn!!.absolutePath)
+        var msgBitmap = BitmapFactory.decodeFile(fileOut.absolutePath)
+
+        val md = MD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "MD: $md")
+
+        val ad = AD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "AD: $ad")
+
+        val nad = NAD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "NAD: $nad")
+
+        val mse = MSE(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "MSE: $mse")
+
+        val snr = SNR(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "SNR: $snr")
+
+        val iff = IF(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "IF: $iff")
+
+        val cq = NC(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "NC: $cq")
     }
 
     private fun codeButtonClick() {
 //        val msg = "I've never been particularly fond of spin classes, as they eschew all the things I enjoy about using a stationary bike: The ability to set my own pace, listen to my music and maybe even dip into a good book while I pedal. But I can understand the appeal of a spin class, as the presence of an instructor can push you out of your comfort zone and ensure that you get a real workout. So it would seem that IMAXShift sits somewhere in the middle, combining an intense audio and visual experience to entertain you while a dedicated instructor gives orders. The problem is, there might have been just little too much going on for me to enjoy any one aspect to the fullest."
         val msg = "Android is a mobile operating system (OS) currently developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. Android's user interface is mainly based on direct manipulation, using touch gestures that loosely correspond to real-world actions, such as swiping, tapping and pinching, to manipulate on-screen objects, along with a virtual keyboard for text input. In addition to touchscreen devices, Google has further developed Android TV for televisions, Android Auto for cars, and Android Wear for wrist watches, each with a specialized user interface. Variants of Android are also used on notebooks, game consoles, digital cameras, and other electronics."
-
+//        val msg = "123456789987654321"
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
 
@@ -126,6 +157,8 @@ class KoxaJaoFragment : Fragment() {
             return fragment
         }
     }
+
+
 
 
 }

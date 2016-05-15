@@ -95,6 +95,14 @@ class QuantizationMethod() : IStegoMethod {
                     pixelA = Color.argb(Color.alpha(pixelA), Color.red(pixelA), Color.green(pixelA), blueA)
                     pixelB = Color.argb(Color.alpha(pixelB), Color.red(pixelB), Color.green(pixelB), blueB)
 
+//                    if (pixelA != bitmap.getPixel(x, y)) {
+//                        pixelA = Color.BLACK
+//                    }
+//
+//                    if (pixelB != bitmap.getPixel(x + 1, y)) {
+//                        pixelB = Color.BLACK
+//                    }
+
                     bitmap.setPixel(x, y, pixelA)
                     bitmap.setPixel(x + 1, y, pixelB)
 

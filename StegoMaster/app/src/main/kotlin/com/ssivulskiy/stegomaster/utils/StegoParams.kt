@@ -9,7 +9,7 @@ import java.math.RoundingMode
 
 fun MD(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
 
-    var max : Double = Double.MIN_VALUE
+    var max : Double = 0.0
 
     for (i in 0..emptyBitmap.width - 1) {
         for (j in 0..emptyBitmap.height - 1) {
@@ -92,7 +92,7 @@ fun SNR(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
         }
     }
 
-    return sumNum.divide(BigDecimal(sumDen), RoundingMode.HALF_DOWN).toDouble()
+    return sumNum.divide(BigDecimal(sumDen),20, RoundingMode.HALF_DOWN).toDouble()
 }
 
 fun IF(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
@@ -112,7 +112,7 @@ fun IF(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
         }
     }
 
-    return 1 - BigDecimal(sumNum).divide(sumDen, RoundingMode.HALF_DOWN).toDouble()
+    return 1 - BigDecimal(sumNum).divide(sumDen, 20, RoundingMode.HALF_DOWN).toDouble()
 }
 
 
@@ -133,5 +133,5 @@ fun NC(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
         }
     }
 
-    return sumNum.divide(sumDen, RoundingMode.HALF_UP).toDouble()
+    return sumNum.divide(sumDen, 20, RoundingMode.HALF_DOWN).toDouble()
 }

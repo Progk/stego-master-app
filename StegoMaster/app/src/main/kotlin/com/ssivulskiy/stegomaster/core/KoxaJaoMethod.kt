@@ -15,7 +15,7 @@ class KoxaJaoMethod() : IStegoMethod {
     var mCoef1 = Coefficient(3, 4)
     var mCoef2 = Coefficient(4, 3)
 
-    var P = 15
+    var P = 25
 
     var mMatrixSize = 8 //N
 
@@ -27,7 +27,7 @@ class KoxaJaoMethod() : IStegoMethod {
 
     override fun code(msgByte : List<Byte>, inFile : File, outFile : File) {
 
-//        val msgByte = makeStegoMessage(msg)
+        Log.i(LOG_TAG, msgByte.toString())
         val options = BitmapFactory.Options().apply {
             inMutable = true
         }
@@ -98,14 +98,17 @@ class KoxaJaoMethod() : IStegoMethod {
                 dctCof[mCoef1.x][mCoef1.y] = cof1
                 dctCof[mCoef2.x][mCoef2.y] = cof2
 
-                val stegoColors = reverseDCT(dctCof)
+                val stegoColors = normDCT(reverseDCT(dctCof))
 
 
                 for (i in 0..stegoColors.size-1) {
                     for (j in 0..stegoColors[i].size-1) {
                         val stegoColor = stegoColors[i][j]
                         val sourcePixel = bitmap.getPixel(x + j, y + i)
-                        val newPixel = createStegoPixel(sourcePixel, stegoColor)
+                        var newPixel = createStegoPixel(sourcePixel, stegoColor)
+//                        if (sourcePixel != newPixel) {
+//                            newPixel = Color.BLACK
+//                        }
                         bitmap.setPixel(x + j, y + i, newPixel)
                     }
                 }
@@ -121,6 +124,52 @@ class KoxaJaoMethod() : IStegoMethod {
     }
 
 
+    fun decode(bitmap : Bitmap) {
+        val msgByte = mutableListOf<Byte>()
+        var byte: Byte = 0;
+        var byteBit = 7
+        var msgSize = -1;
+
+        loop@for (y in 0..bitmap.height - 1 step mMatrixSize) {
+            for (x in 0..bitmap.width - 1 step mMatrixSize) {
+                val arr = Array2dOfInt(mMatrixSize, mMatrixSize)
+
+                for (i in 0..arr.size - 1) {
+                    for (j in 0..arr[i].size - 1) {
+                        val pixel = bitmap.getPixel(x + j, y + i)
+                        arr[i][j] = getStegoColor(pixel)
+                    }
+                }
+
+                var dctCof = DCT(arr)
+
+                if (byteBit == -1) {
+                    msgByte.add(byte)
+                    byte = 0
+                    byteBit = 7
+                    if (msgSize == -1 && msgByte.size == 2) {
+                        msgSize = decodeMsgSize(msgByte)
+                        msgByte.clear()
+                        Log.d(LOG_TAG, "Message size: $msgSize")
+                    }
+
+                }
+
+                if (msgSize != -1 && msgSize == msgByte.size)
+                    break@loop
+
+                if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) > Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
+                    byte = byte.setZeroAtPos(byteBit)
+                } else {
+                    byte = byte.setOneAtPos(byteBit)
+                }
+
+                byteBit--;
+            }
+        }
+
+        Log.d(LOG_TAG, String(msgByte.toByteArray()))
+    }
 
 
     override fun decode(file : File) : List<Byte> {
@@ -172,6 +221,7 @@ class KoxaJaoMethod() : IStegoMethod {
     }
 
     override fun decodeMsgSize(msg: List<Byte>): Int {
+        Log.i(LOG_TAG, msg.toString())
         return calculateMessageLength(msg)
     }
 

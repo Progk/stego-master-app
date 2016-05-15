@@ -36,8 +36,8 @@ class LSBPermutationMethod : IStegoMethod {
 
         for (i in 0..msgByte.size.times(8).minus(1)) {
 
-            val x = Math.floor(i.plus(100) / bitmap.height.toDouble()).toInt()
-            val y = i.plus(100) % bitmap.height
+            var x = Math.floor(i * 15 / bitmap.width.toDouble()).toInt()
+            var y = i.times(15) % bitmap.height
             var pixel = bitmap.getPixel(x, y)
 
             Log.d(LOG_TAG, "X: $x, Y:$y")
@@ -63,6 +63,9 @@ class LSBPermutationMethod : IStegoMethod {
 
 
             val value = msgByte[i / 8].getBitAtPos(i % 8).toInt()
+            var modif = false
+            if (color.getBitAtPos(0) != value)
+                modif = true
 
             if (value == 1) {
                 color = color or 1
@@ -82,7 +85,9 @@ class LSBPermutationMethod : IStegoMethod {
                 }
             }
 
-            val newPixel = Color.argb(alpha, red, green, blue)
+            var newPixel = Color.argb(alpha, red, green, blue)
+//            if (modif)
+//                newPixel = Color.BLACK
 
             bitmap.setPixel(x, y, newPixel)
 
@@ -105,8 +110,8 @@ class LSBPermutationMethod : IStegoMethod {
 
         while (true) {
 
-            val x = Math.floor(i.plus(100) / bitmap.height.toDouble()).toInt()
-            val y = i.plus(100) % bitmap.height
+            var x = Math.floor(i * 15 / bitmap.width.toDouble()).toInt()
+            var y = i.times(15) % bitmap.height
 
             var pixel = bitmap.getPixel(x, y)
 

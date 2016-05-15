@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
 import com.ssivulskiy.stegomaster.core.QuantizationMethod
-import com.ssivulskiy.stegomaster.utils.makeStegoMessage
+import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_quantization.*
 import org.jetbrains.anko.support.v4.toast
 import java.io.File
@@ -23,7 +23,7 @@ class QuantizationFragment : Fragment() {
     private val LOG_TAG = javaClass.name
 
     private val FILE_NAME_IN = "cars.jpg"
-    private val FILE_NAME_OUT = "cars_quant_lsb.png"
+    private val FILE_NAME_OUT = "cars_quant.png"
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,6 +50,7 @@ class QuantizationFragment : Fragment() {
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
         toast(stringMsg)
+        calculate()
     }
 
     private fun codeButtonClick() {
@@ -95,6 +96,36 @@ class QuantizationFragment : Fragment() {
 //
 //        val cq = CQ(emptyBitmap, msgBitmap)
 //        Log.i(LOG_TAG, "CQ: $cq")
+    }
+
+    fun calculate() {
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        dir = File(dir, "stego")
+        val fileOut = File(dir, FILE_NAME_OUT)
+        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
+        var emptyBitmap = BitmapFactory.decodeFile(fileIn!!.absolutePath)
+        var msgBitmap = BitmapFactory.decodeFile(fileOut.absolutePath)
+
+        val md = MD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "MD: $md")
+
+        val ad = AD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "AD: $ad")
+
+        val nad = NAD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "NAD: $nad")
+
+        val mse = MSE(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "MSE: $mse")
+
+        val snr = SNR(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "SNR: $snr")
+
+        val iff = IF(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "IF: $iff")
+
+        val cq = NC(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "NC: $cq")
     }
 
     companion object {

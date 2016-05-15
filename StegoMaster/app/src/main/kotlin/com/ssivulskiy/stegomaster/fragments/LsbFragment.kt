@@ -51,6 +51,38 @@ class LsbFragment : Fragment() {
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
         toast(stringMsg)
+
+        calculate()
+    }
+
+    fun calculate() {
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        dir = File(dir, "stego")
+        val fileOut = File(dir, FILE_NAME_OUT)
+        val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
+        var emptyBitmap = BitmapFactory.decodeFile(fileIn!!.absolutePath)
+        var msgBitmap = BitmapFactory.decodeFile(fileOut.absolutePath)
+
+        val md = MD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "MD: $md")
+
+        val ad = AD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "AD: $ad")
+
+        val nad = NAD(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "NAD: $nad")
+
+        val mse = MSE(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "MSE: $mse")
+
+        val snr = SNR(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "SNR: $snr")
+
+        val iff = IF(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "IF: $iff")
+
+        val cq = NC(emptyBitmap, msgBitmap)
+        Log.i(LOG_TAG, "NC: $cq")
     }
 
     private fun codeButtonClick() {
@@ -69,29 +101,7 @@ class LsbFragment : Fragment() {
 
         Picasso.with(context).load(fileOut).into(imageView)
 
-        var emptyBitmap = BitmapFactory.decodeFile(fileIn.absolutePath)
-        var msgBitmap = BitmapFactory.decodeFile(fileOut.absolutePath)
 
-//        val md = MD(emptyBitmap, msgBitmap)
-//        Log.i(LOG_TAG, "MD: $md")
-//
-//        val ad = AD(emptyBitmap, msgBitmap)
-//        Log.i(LOG_TAG, "AD: $ad")
-//
-//        val nad = NAD(emptyBitmap, msgBitmap)
-//        Log.i(LOG_TAG, "NAD: $nad")
-//
-//        val mse = MSE(emptyBitmap, msgBitmap)
-//        Log.i(LOG_TAG, "MSE: $mse")
-//
-//        val snr = SNR(emptyBitmap, msgBitmap)
-//        Log.i(LOG_TAG, "SNR: $snr")
-//
-//        val iff = IF(emptyBitmap, msgBitmap)
-//        Log.i(LOG_TAG, "IF: $iff")
-//
-//        val cq = NC(emptyBitmap, msgBitmap)
-//        Log.i(LOG_TAG, "NC: $cq")
     }
 
     companion object {

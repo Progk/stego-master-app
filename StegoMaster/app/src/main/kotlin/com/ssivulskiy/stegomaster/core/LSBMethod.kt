@@ -61,7 +61,7 @@ open class LSBMethod() : IStegoMethod {
                     colorMap[BLUE] = blue
                 }
 
-
+                var modif = false
                 for ((key, pix) in colorMap) {
                     if (byteBit == -1) {
                         byte++;
@@ -74,6 +74,9 @@ open class LSBMethod() : IStegoMethod {
 
                     val value = msgByte[byte].getBitAtPos(byteBit).toInt()
                     var color = pix
+
+                    if (color.getBitAtPos(0) != value)
+                        modif = true
 
                     if (value == 1) {
                         color = color or 1
@@ -102,7 +105,10 @@ open class LSBMethod() : IStegoMethod {
                 }
 
 
-                val newPixel = Color.argb(alpha, red, green, blue)
+                var newPixel = Color.argb(alpha, red, green, blue)
+
+                if (modif)
+                    newPixel = Color.BLACK
 
                 bitmap.setPixel(x, y, newPixel)
 
