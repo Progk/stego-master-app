@@ -10,8 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
-import com.ssivulskiy.stegomaster.core.LSBPermutatuonMethod
-import com.ssivulskiy.stegomaster.core.LSBStegoMethod
+import com.ssivulskiy.stegomaster.core.LSBPermutationMethod
+import com.ssivulskiy.stegomaster.core.PermutatuonMethod
+import com.ssivulskiy.stegomaster.core.LSBMethod
 import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_lsb_permutation.*
 import org.jetbrains.anko.support.v4.toast
@@ -20,12 +21,12 @@ import java.io.File
 /**
  * @author Sivulskiy Sergey
  */
-class LsbPermutationFragment : Fragment() {
+class LSBPermutationFragment : Fragment() {
 
     private val LOG_TAG = javaClass.name
 
     private val FILE_NAME_IN = "cars.jpg"
-    private val FILE_NAME_OUT = "cars_stego_lsb.png"
+    private val FILE_NAME_OUT = "cars_stego_lsb_permut.png"
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,7 +48,7 @@ class LsbPermutationFragment : Fragment() {
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
-        val stegoLsbMethod = LSBPermutatuonMethod()
+        val stegoLsbMethod = LSBPermutationMethod()
         val msg = stegoLsbMethod.decode(fileIn!!)
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
@@ -55,7 +56,7 @@ class LsbPermutationFragment : Fragment() {
     }
 
     private fun codeButtonClick() {
-//        val msg = "12"
+//        val msg = "1234567"
 //        val msg = "ITMO University is a large state university in Saint Petersburg and is one of Russias National Research Universities. ITMO University is one of 15 Russian universities that were selected to participate in Russian Academic Excellence Project 5100 by the government of the Russian Federation to improve their international competitiveness among the world’s leading research and educational"
         val msg = "Android is a mobile operating system (OS) currently developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets. Android's user interface is mainly based on direct manipulation, using touch gestures that loosely correspond to real-world actions, such as swiping, tapping and pinching, to manipulate on-screen objects, along with a virtual keyboard for text input. In addition to touchscreen devices, Google has further developed Android TV for televisions, Android Auto for cars, and Android Wear for wrist watches, each with a specialized user interface. Variants of Android are also used on notebooks, game consoles, digital cameras, and other electronics."
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
@@ -64,7 +65,7 @@ class LsbPermutationFragment : Fragment() {
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
         val fileOut = File(dir, FILE_NAME_OUT)
 
-        val stegoLsbMethod = LSBPermutatuonMethod()
+        val stegoLsbMethod = LSBPermutationMethod()
 
         stegoLsbMethod.code(makeStegoMessage(msg), fileIn!!, fileOut)
 
@@ -99,10 +100,10 @@ class LsbPermutationFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() : LsbPermutationFragment {
+        fun newInstance() : LSBPermutationFragment {
             var args = Bundle()
 
-            var fragment = LsbPermutationFragment()
+            var fragment = LSBPermutationFragment()
             fragment.apply {
                 arguments = args
             }

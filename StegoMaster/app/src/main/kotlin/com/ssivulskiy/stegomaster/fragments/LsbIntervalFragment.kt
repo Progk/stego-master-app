@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
-import com.ssivulskiy.stegomaster.core.LSBIntervalStegoMethod
-import com.ssivulskiy.stegomaster.core.LSBStegoMethod
+import com.ssivulskiy.stegomaster.core.LSBIntervalMethod
+import com.ssivulskiy.stegomaster.core.LSBMethod
 import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_lsb_interval.*
 import org.jetbrains.anko.support.v4.toast
@@ -47,7 +47,7 @@ class LsbIntervalFragment : Fragment() {
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
-        val stegoLsbMethod = LSBIntervalStegoMethod()
+        val stegoLsbMethod = LSBIntervalMethod()
         val msg = stegoLsbMethod.decode(fileIn!!)
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
@@ -64,7 +64,7 @@ class LsbIntervalFragment : Fragment() {
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
         val fileOut = File(dir, FILE_NAME_OUT)
 
-        val stegoLsbMethod = LSBIntervalStegoMethod()
+        val stegoLsbMethod = LSBIntervalMethod()
 
         stegoLsbMethod.code(makeStegoMessage(msg), fileIn!!, fileOut)
 

@@ -5,15 +5,14 @@ fun Int.getBitAtPos(pos : Int) : Int {
 }
 
 fun Int.setOneAtPos(pos : Int) : Int {
-    return (this or 1.shl(pos))
+    return this or 1.shl(pos)
 }
 
 fun Int.setZeroAtPos(pos : Int) : Int {
-    return (this and 1.shl(pos).inv())
+    return this and 1.shl(pos).inv()
 }
 
 fun Int.bitCount() : Int {
-
     var count = 0
     for (i in 0..7) {
         count += this.getBitAtPos(i)

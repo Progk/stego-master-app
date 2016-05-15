@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
-import com.ssivulskiy.stegomaster.core.LSBStegoMethod
+import com.ssivulskiy.stegomaster.core.LSBMethod
 import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_lsb_permutation.*
 import org.jetbrains.anko.support.v4.toast
@@ -24,7 +24,7 @@ class LsbFragment : Fragment() {
     private val LOG_TAG = javaClass.name
 
     private val FILE_NAME_IN = "cars.jpg"
-    private val FILE_NAME_OUT = "cars_stego_lsb.png"
+    private val FILE_NAME_OUT = "cars_stego_lsb_simple.png"
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,7 +46,7 @@ class LsbFragment : Fragment() {
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
-        val stegoLsbMethod = LSBStegoMethod()
+        val stegoLsbMethod = LSBMethod()
         val msg = stegoLsbMethod.decode(fileIn!!)
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
@@ -63,7 +63,7 @@ class LsbFragment : Fragment() {
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
         val fileOut = File(dir, FILE_NAME_OUT)
 
-        val stegoLsbMethod = LSBStegoMethod()
+        val stegoLsbMethod = LSBMethod()
 
         stegoLsbMethod.code(makeStegoMessage(msg), fileIn!!, fileOut)
 
@@ -72,26 +72,26 @@ class LsbFragment : Fragment() {
         var emptyBitmap = BitmapFactory.decodeFile(fileIn.absolutePath)
         var msgBitmap = BitmapFactory.decodeFile(fileOut.absolutePath)
 
-        val md = MD(emptyBitmap, msgBitmap)
-        Log.i(LOG_TAG, "MD: $md")
-
-        val ad = AD(emptyBitmap, msgBitmap)
-        Log.i(LOG_TAG, "AD: $ad")
-
-        val nad = NAD(emptyBitmap, msgBitmap)
-        Log.i(LOG_TAG, "NAD: $nad")
-
-        val mse = MSE(emptyBitmap, msgBitmap)
-        Log.i(LOG_TAG, "MSE: $mse")
-
-        val snr = SNR(emptyBitmap, msgBitmap)
-        Log.i(LOG_TAG, "SNR: $snr")
-
-        val iff = IF(emptyBitmap, msgBitmap)
-        Log.i(LOG_TAG, "IF: $iff")
-
-        val cq = NC(emptyBitmap, msgBitmap)
-        Log.i(LOG_TAG, "NC: $cq")
+//        val md = MD(emptyBitmap, msgBitmap)
+//        Log.i(LOG_TAG, "MD: $md")
+//
+//        val ad = AD(emptyBitmap, msgBitmap)
+//        Log.i(LOG_TAG, "AD: $ad")
+//
+//        val nad = NAD(emptyBitmap, msgBitmap)
+//        Log.i(LOG_TAG, "NAD: $nad")
+//
+//        val mse = MSE(emptyBitmap, msgBitmap)
+//        Log.i(LOG_TAG, "MSE: $mse")
+//
+//        val snr = SNR(emptyBitmap, msgBitmap)
+//        Log.i(LOG_TAG, "SNR: $snr")
+//
+//        val iff = IF(emptyBitmap, msgBitmap)
+//        Log.i(LOG_TAG, "IF: $iff")
+//
+//        val cq = NC(emptyBitmap, msgBitmap)
+//        Log.i(LOG_TAG, "NC: $cq")
     }
 
     companion object {

@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
-import com.ssivulskiy.stegomaster.core.KoxaJaoStegoMethod
+import com.ssivulskiy.stegomaster.core.KoxaJaoMethod
 import com.ssivulskiy.stegomaster.utils.*
 import kotlinx.android.synthetic.main.fragment_koxa_jao.*
 import org.jetbrains.anko.support.v4.toast
@@ -50,7 +50,7 @@ class KoxaJaoFragment : Fragment() {
         dir = File(dir, "stego")
 
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
-        val koxaJaoStego = KoxaJaoStegoMethod()
+        val koxaJaoStego = KoxaJaoMethod()
         val msg = koxaJaoStego.decode(fileIn!!)
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
@@ -67,7 +67,7 @@ class KoxaJaoFragment : Fragment() {
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
         val fileOut = File(dir, FILE_NAME_OUT)
 
-        val koxaJaoStego = KoxaJaoStegoMethod()
+        val koxaJaoStego = KoxaJaoMethod()
 
 
         koxaJaoStego.code(makeStegoMessage(msg), fileIn!!, fileOut)

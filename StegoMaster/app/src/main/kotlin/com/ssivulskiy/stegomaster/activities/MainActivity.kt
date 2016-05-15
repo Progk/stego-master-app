@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_lsb_perm -> {
-                fragment = LsbPermutationFragment.newInstance()
+                fragment = LSBPermutationFragment.newInstance()
                 setToolbarTitle(R.string.lsb_perm_method)
             }
             R.id.nav_quant -> {

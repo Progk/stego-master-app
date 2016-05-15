@@ -8,7 +8,7 @@ import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class KoxaJaoStegoMethod() : IStegoMethod {
+class KoxaJaoMethod() : IStegoMethod {
 
     private val LOG_TAG = javaClass.simpleName
 

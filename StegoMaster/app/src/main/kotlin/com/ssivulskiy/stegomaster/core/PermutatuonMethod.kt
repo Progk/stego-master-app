@@ -4,7 +4,7 @@ import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 
 
-class LSBPermutatuonMethod : LSBStegoMethod() {
+class PermutatuonMethod : LSBMethod() {
 
     var mPermutationMatrix = arrayOf(
             arrayOf(0, 0, 0, 0, 0, 0, 0, 1),

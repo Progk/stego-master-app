@@ -8,7 +8,7 @@ import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class LSBIntervalStegoMethod : IStegoMethod {
+class LSBIntervalMethod : IStegoMethod {
     private val LOG_TAG = javaClass.simpleName
 
     private val RED = 0

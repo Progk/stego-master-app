@@ -9,7 +9,7 @@ import java.math.RoundingMode
 
 fun MD(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
 
-    var max : Double = 0.0
+    var max : Double = Double.MIN_VALUE
 
     for (i in 0..emptyBitmap.width - 1) {
         for (j in 0..emptyBitmap.height - 1) {
@@ -86,13 +86,13 @@ fun SNR(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
             val coloMsg = msgBitmap.getPixel(i, j).and(0x00FFFFFF).toDouble()
 
             val cof = BigDecimal(colorEmpty).pow(2)
-            sumNum = sumNum.add(cof)
+            sumNum += cof
 
             sumDen += Math.pow(colorEmpty - coloMsg, 2.0)
         }
     }
 
-    return sumNum.divide(BigDecimal(sumDen), RoundingMode.HALF_UP).toDouble()
+    return sumNum.divide(BigDecimal(sumDen), RoundingMode.HALF_DOWN).toDouble()
 }
 
 fun IF(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
@@ -108,11 +108,11 @@ fun IF(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
             sumNum += Math.pow(colorEmpty - coloMsg, 2.0)
 
             val cof = BigDecimal(colorEmpty).pow(2)
-            sumDen = sumDen.add(cof)
+            sumDen += cof
         }
     }
 
-    return 1 - BigDecimal(sumNum).divide(sumDen, RoundingMode.HALF_UP).toDouble()
+    return 1 - BigDecimal(sumNum).divide(sumDen, RoundingMode.HALF_DOWN).toDouble()
 }
 
 
@@ -129,7 +129,7 @@ fun NC(emptyBitmap: Bitmap, msgBitmap: Bitmap) : Double {
             sumNum += BigDecimal(colorEmpty).multiply(BigDecimal(coloMsg))
 
             val cof = BigDecimal(colorEmpty).pow(2)
-            sumDen = sumDen.add(cof)
+            sumDen += cof
         }
     }
 

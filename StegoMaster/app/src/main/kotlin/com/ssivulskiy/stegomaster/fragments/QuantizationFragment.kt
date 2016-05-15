@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
-import com.ssivulskiy.stegomaster.core.QuantizationStegoMethod
+import com.ssivulskiy.stegomaster.core.QuantizationMethod
 import com.ssivulskiy.stegomaster.utils.makeStegoMessage
 import kotlinx.android.synthetic.main.fragment_quantization.*
 import org.jetbrains.anko.support.v4.toast
@@ -45,7 +45,7 @@ class QuantizationFragment : Fragment() {
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         dir = File(dir, "stego")
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
-        val stegoLsbMethod = QuantizationStegoMethod()
+        val stegoLsbMethod = QuantizationMethod()
         val msg = stegoLsbMethod.decode(fileIn!!)
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
@@ -63,7 +63,7 @@ class QuantizationFragment : Fragment() {
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
         val fileOut = File(dir, FILE_NAME_OUT)
 
-        val stegoLsbMethod = QuantizationStegoMethod()
+        val stegoLsbMethod = QuantizationMethod()
 
         stegoLsbMethod.code(makeStegoMessage(msg), fileIn!!, fileOut)
 

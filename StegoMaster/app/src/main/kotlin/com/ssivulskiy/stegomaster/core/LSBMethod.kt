@@ -8,7 +8,7 @@ import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-open class LSBStegoMethod() : IStegoMethod {
+open class LSBMethod() : IStegoMethod {
 
     private val LOG_TAG = javaClass.simpleName
 
@@ -60,6 +60,7 @@ open class LSBStegoMethod() : IStegoMethod {
                 if (mComponents.and(0x00000001) == 1) {
                     colorMap[BLUE] = blue
                 }
+
 
                 for ((key, pix) in colorMap) {
                     if (byteBit == -1) {
