@@ -53,7 +53,7 @@ class LSBPermutationFragment : Fragment() {
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
         toast(stringMsg)
-        calculate()
+        //calculate()
     }
 
     private fun codeButtonClick() {

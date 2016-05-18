@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer?.setDrawerListener(toggle)
         toggle.syncState()
 
-        replaceFragemnt(LsbFragment.newInstance())
+        replaceFragemnt(LSBFragment.newInstance())
         setToolbarTitle(R.string.lsb_method)
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView?
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragment : Fragment;
         when(id) {
             R.id.nav_lsb -> {
-                fragment = LsbFragment.newInstance()
+                fragment = LSBFragment.newInstance()
                 setToolbarTitle(R.string.lsb_method)
             }
             R.id.nav_koxa_jao -> {
@@ -103,11 +103,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setToolbarTitle(R.string.quantization_method)
             }
             R.id.nav_lsb_interval -> {
-                fragment = LsbIntervalFragment.newInstance()
+                fragment = LSBIntervalFragment.newInstance()
                 setToolbarTitle(R.string.lsb_interval_method)
             }
             else -> {
-                fragment = LsbFragment.newInstance()
+                fragment = LSBFragment.newInstance()
             }
         }
 

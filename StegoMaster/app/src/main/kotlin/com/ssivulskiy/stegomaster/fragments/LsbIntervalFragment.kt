@@ -20,7 +20,7 @@ import java.io.File
 /**
  * @author Sivulskiy Sergey
  */
-class LsbIntervalFragment : Fragment() {
+class LSBIntervalFragment : Fragment() {
 
     private val LOG_TAG = javaClass.name
 
@@ -52,7 +52,7 @@ class LsbIntervalFragment : Fragment() {
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
         toast(stringMsg)
-        calculate()
+        //calculate()
     }
 
     private fun codeButtonClick() {
@@ -104,10 +104,10 @@ class LsbIntervalFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() : LsbIntervalFragment {
+        fun newInstance() : LSBIntervalFragment {
             var args = Bundle()
 
-            var fragment = LsbIntervalFragment()
+            var fragment = LSBIntervalFragment()
             fragment.apply {
                 arguments = args
             }

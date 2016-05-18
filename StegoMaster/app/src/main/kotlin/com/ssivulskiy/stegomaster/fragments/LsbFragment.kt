@@ -19,7 +19,7 @@ import java.io.File
 /**
  * @author Sivulskiy Sergey
  */
-class LsbFragment : Fragment() {
+class LSBFragment : Fragment() {
 
     private val LOG_TAG = javaClass.name
 
@@ -52,7 +52,7 @@ class LsbFragment : Fragment() {
         Log.d(LOG_TAG, stringMsg)
         toast(stringMsg)
 
-        calculate()
+        //calculate()
     }
 
     fun calculate() {
@@ -105,10 +105,10 @@ class LsbFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() : LsbFragment {
+        fun newInstance() : LSBFragment {
             var args = Bundle()
 
-            var fragment = LsbFragment()
+            var fragment = LSBFragment()
             fragment.apply {
                 arguments = args
             }
