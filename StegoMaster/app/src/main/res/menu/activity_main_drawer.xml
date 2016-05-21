@@ -27,6 +27,10 @@
             android:id="@+id/nav_quant"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/quantization_method"/>
+        <item
+            android:id="@+id/benham_memon_yeo_yeung_method"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/benham_memon_yeo_yeung_method"/>
 
     </group>
 

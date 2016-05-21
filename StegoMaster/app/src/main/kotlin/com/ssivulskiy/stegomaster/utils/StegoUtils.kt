@@ -77,7 +77,29 @@ fun reverseDCT(dcpCof: Array<IntArray>): Array<IntArray> {
             sum /= Math.sqrt(2.0 * dcpCof.size)
 
             arr[x][y] = sum.toInt()
+
         }
+
+//        var max = Int.MIN_VALUE
+//        for (k in 0..dcpCof[x].size - 1) {
+//            if (Math.abs(arr[x][k]) > max) {
+//                max = Math.abs(arr[x][k])
+//            }
+//        }
+//
+//        if (max > 255) {
+//            for (k in 0..dcpCof[x].size - 1) {
+//
+//                    arr[x][k] = arr[x][k].div(max).times(255)
+//
+//            }
+//        } else {
+//            for (k in 0..dcpCof[x].size - 1) {
+//
+//                arr[x][k] = Math.abs(arr[x][k])
+//
+//            }
+//        }
 
     }
     return arr;

@@ -10,6 +10,7 @@
     <string name="koxa_jao_method">Koxa Jao Method</string>
     <string name="quantization_method">Quantization Method</string>
     <string name="lsb_interval_method">LSB Interval Method</string>
+    <string name="benham_memon_yeo_yeung_method">Benham Memon Yeo Yeung Method</string>
 
 
 </resources>

@@ -106,6 +106,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 fragment = LSBIntervalFragment.newInstance()
                 setToolbarTitle(R.string.lsb_interval_method)
             }
+            R.id.benham_memon_yeo_yeung_method -> {
+                fragment = BenhamMemonYeoYeungFragemnt.newInstance()
+                setToolbarTitle(R.string.benham_memon_yeo_yeung_method)
+            }
             else -> {
                 fragment = LSBFragment.newInstance()
             }

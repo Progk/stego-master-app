@@ -8,16 +8,19 @@ import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class KoxaJaoMethod() : IStegoMethod {
+class BenhamMemonYeoYeungMethod() : IStegoMethod {
 
     private val LOG_TAG = javaClass.simpleName
+    val MATRIX_SIZE = 8
 
-    var mCoef1 = Coefficient(3, 4)
-    var mCoef2 = Coefficient(4, 3)
+    var mCoef1 = Coefficient(6, 2)
+    var mCoef2 = Coefficient(4, 4)
+    var mCoef3 = Coefficient(2, 6)
 
     var P = 60
+    var Pl = 2600
+    var Ph = 40
 
-    var mMatrixSize = 8 //N
 
     var mComponent = Component.BLUE
 
@@ -25,7 +28,32 @@ class KoxaJaoMethod() : IStegoMethod {
 
     var mCompressQuality = 100
 
-    override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
+    fun countByteInImage(inFile : File) : Int {
+
+        var bitmap = BitmapFactory.decodeFile(inFile.absolutePath)
+
+        var countBit = 0
+        loop@for (y in 0..bitmap.height - 1 step MATRIX_SIZE) {
+            for (x in 0..bitmap.width - 1 step MATRIX_SIZE) {
+                val arr = Array2dOfInt(MATRIX_SIZE, MATRIX_SIZE)
+                for (i in 0..arr.size-1) {
+                    for (j in 0..arr[i].size-1) {
+                        val pixel = bitmap.getPixel(x + j, y + i)
+                        arr[i][j] = getStegoColor(pixel)
+                    }
+                }
+
+                val dctCof = DCT(arr)
+
+                if (isCorrectBlock(dctCof))
+                    countBit++
+            }
+        }
+
+        return countBit / 8
+    }
+
+    override fun code(msgByte : List<Byte>, inFile : File, outFile : File) {
         val list = mutableListOf<Int>()
         Log.i(LOG_TAG, msgByte.toString())
         val options = BitmapFactory.Options().apply {
@@ -36,17 +64,20 @@ class KoxaJaoMethod() : IStegoMethod {
         var byte = 0;
         var byteBit = 7
 
-        loop@for (y in 0..bitmap.height - 1 step mMatrixSize) {
-            for (x in 0..bitmap.width - 1 step mMatrixSize) {
-                val arr = Array2dOfInt(mMatrixSize, mMatrixSize)
-                for (i in 0..arr.size - 1) {
-                    for (j in 0..arr[i].size - 1) {
+        loop@for (y in 0..bitmap.height - 1 step MATRIX_SIZE) {
+            for (x in 0..bitmap.width - 1 step MATRIX_SIZE) {
+                val arr = Array2dOfInt(MATRIX_SIZE, MATRIX_SIZE)
+                for (i in 0..arr.size-1) {
+                    for (j in 0..arr[i].size-1) {
                         val pixel = bitmap.getPixel(x + j, y + i)
                         arr[i][j] = getStegoColor(pixel)
                     }
                 }
 
                 var dctCof = DCT(arr)
+
+                if (!isCorrectBlock(dctCof))
+                    continue
 
                 if (byteBit == -1) {
                     byte++;
@@ -58,57 +89,60 @@ class KoxaJaoMethod() : IStegoMethod {
 
                 val value = msgByte[byte]
 
-                var cof1 = Math.abs(dctCof[mCoef1.x][mCoef1.y])
-                var cof2 = Math.abs(dctCof[mCoef2.x][mCoef2.y])
+                var cof1 = dctCof[mCoef1.x][mCoef1.y]
+                var cof2 = dctCof[mCoef2.x][mCoef2.y]
+                var cof3 = dctCof[mCoef3.x][mCoef3.y]
 
-                var factor1 : Int
-                var factor2 : Int
+                if (value.getBitAtPos(byteBit) == 0.toByte()) { //0
+                   if (cof3 > cof1 || cof3 > cof2) {
+                       val min = Math.min(cof1, cof2)
+                       cof3 = min - P/2
+                       if (cof1 == min)
+                           cof1 += P/2
+                       else
+                           cof2 += P/2
 
-                if (dctCof[mCoef1.x][mCoef1.y] >= 0)
-                    factor1 = 1
-                else
-                    factor1 = -1
 
-                if (dctCof[mCoef2.x][mCoef2.y] >= 0)
-                    factor2 = 1
-                else
-                    factor2 = -1
-
-                if (cof1 - cof2 <= P && value.getBitAtPos(byteBit) == 0.toByte()) {
-                    cof1 = P + cof2 + 1
+                   }
                     list.add(0)
-                } else if (cof1 - cof2 >= -P && value.getBitAtPos(byteBit) == 1.toByte()) {
-                    cof2 = P + cof1 + 1
+                    Log.i(LOG_TAG, "B:0 C1:$cof1 C2:$cof2 C3:$cof3")
+                    Log.i(LOG_TAG, "${cof3 < Math.min(cof1, cof2)}")
+                } else { //1
+                    if (cof3 < cof1 || cof3 < cof2) {
+                        val max = Math.max(cof1, cof2)
+                        cof3 = max + P/2
+                        if (cof1 == max)
+                            cof1 -= P/2
+                        else
+                            cof2 -= P/2
+                    }
                     list.add(1)
-                } else {
-                    if (cof1 - cof2 > P)
-                        list.add(0)
-                    else if (cof1 - cof2 < -P)
-                        list.add(1)
+                    Log.i(LOG_TAG, "B:1 C1:$cof1 C2:$cof2 C3:$cof3")
+                    Log.i(LOG_TAG, "${cof3 > Math.max(cof1, cof2)}")
                 }
 
 
-                dctCof[mCoef1.x][mCoef1.y] = cof1 * factor1
-                dctCof[mCoef2.x][mCoef2.y] = cof2 * factor2
+                dctCof[mCoef1.x][mCoef1.y] = cof1
+                dctCof[mCoef2.x][mCoef2.y] = cof2
+                dctCof[mCoef3.x][mCoef3.y] = cof3
 
-                Log.i(LOG_TAG, "C1: ${dctCof[mCoef1.x][mCoef1.y]} C2 :${dctCof[mCoef2.x][mCoef2.y]} Bit: ${value.getBitAtPos(byteBit)}")
-                if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) > Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
-                    Log.i(LOG_TAG, "0 true")
-                } else if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) < Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
-                    Log.i(LOG_TAG, "1 false")
+                val stegoColors = reverseDCT(dctCof)
+
+                var max = Int.MIN_VALUE
+                for (i in 0..stegoColors.size-1) {
+                    for (j in 0..stegoColors[i].size-1) {
+                        if (stegoColors[i][j] > 255)
+                            Log.i(LOG_TAG, "ddddddddd")
+                    }
                 }
 
-                val stegoColors = normDCT(reverseDCT(dctCof))
 
 
-                for (i in 0..stegoColors.size - 1) {
-                    for (j in 0..stegoColors[i].size - 1) {
+                for (i in 0..stegoColors.size-1) {
+                    for (j in 0..stegoColors[i].size-1) {
                         val stegoColor = stegoColors[i][j]
                         val sourcePixel = bitmap.getPixel(x + j, y + i)
                         var newPixel = createStegoPixel(sourcePixel, stegoColor)
-                        //                        if (sourcePixel != newPixel) {
-                        //                            newPixel = Color.BLACK
-                        //                        }
                         bitmap.setPixel(x + j, y + i, newPixel)
                     }
                 }
@@ -117,7 +151,6 @@ class KoxaJaoMethod() : IStegoMethod {
             }
         }
         Log.i(LOG_TAG, list.toString())
-
         val fOut = FileOutputStream(outFile);
         bitmap.compress(mCompressFormat, mCompressQuality, fOut);
         fOut.flush();
@@ -125,16 +158,16 @@ class KoxaJaoMethod() : IStegoMethod {
     }
 
 
-    override fun decode(file: File): List<Byte> {
+    override fun decode(file : File) : List<Byte> {
         var bitmap = BitmapFactory.decodeFile(file.absolutePath)
         val msgByte = mutableListOf<Byte>()
         var byte: Byte = 0;
         var byteBit = 7
         var msgSize = -1;
         val list = mutableListOf<Int>()
-        loop@for (y in 0..bitmap.height - 1 step mMatrixSize) {
-            for (x in 0..bitmap.width - 1 step mMatrixSize) {
-                val arr = Array2dOfInt(mMatrixSize, mMatrixSize)
+        loop@for (y in 0..bitmap.height - 1 step MATRIX_SIZE) {
+            for (x in 0..bitmap.width - 1 step MATRIX_SIZE) {
+                val arr = Array2dOfInt(MATRIX_SIZE, MATRIX_SIZE)
 
                 for (i in 0..arr.size - 1) {
                     for (j in 0..arr[i].size - 1) {
@@ -160,12 +193,17 @@ class KoxaJaoMethod() : IStegoMethod {
                 if (msgSize != -1 && msgSize == msgByte.size)
                     break@loop
 
-                if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) >= Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
-                    byte = byte.setZeroAtPos(byteBit)
+
+                var cof1 = dctCof[mCoef1.x][mCoef1.y]
+                var cof2 = dctCof[mCoef2.x][mCoef2.y]
+                var cof3 = dctCof[mCoef3.x][mCoef3.y]
+
+                if (cof3 < Math.min(cof1, cof2)) {
                     list.add(0)
+                    byte = byte.setZeroAtPos(byteBit)
                 } else {
-                    byte = byte.setOneAtPos(byteBit)
                     list.add(1)
+                    byte = byte.setOneAtPos(byteBit)
                 }
 
                 byteBit--;
@@ -180,7 +218,7 @@ class KoxaJaoMethod() : IStegoMethod {
         return calculateMessageLength(msg)
     }
 
-    private fun createStegoPixel(sourcePixel: Int, stegoColor: Int): Int {
+    private fun createStegoPixel(sourcePixel : Int, stegoColor : Int) : Int {
         when (mComponent) {
             Component.RED -> {
                 return Color.argb(
@@ -210,7 +248,35 @@ class KoxaJaoMethod() : IStegoMethod {
 
     }
 
-    private fun getStegoColor(pixel: Int): Int {
+    private fun isCorrectBlock(arr : Array<IntArray>) : Boolean {
+        var x = MATRIX_SIZE - 2
+        var y = MATRIX_SIZE - 2
+        var value = 0
+        for (i in 0..y) {
+            for (j in 0..x) {
+                value += arr[i][j]
+            }
+            x--;
+        }
+        if (value > Pl)
+            return false
+
+        y = 2
+        value = 0
+        for (i in arr.size - 1 downTo 2) {
+            for (j in y..MATRIX_SIZE - 1) {
+                value += arr[i][j]
+            }
+            y++
+        }
+
+        if (value < Ph)
+            return false
+
+        return true
+    }
+
+    private fun getStegoColor(pixel : Int) : Int {
         when (mComponent) {
             Component.RED -> return Color.red(pixel)
             Component.GREEN -> return Color.green(pixel)
@@ -221,7 +287,7 @@ class KoxaJaoMethod() : IStegoMethod {
         }
     }
 
-    data class Coefficient(val x: Int, val y: Int);
+    data class Coefficient (val x : Int, val y : Int);
 
     enum class Component() {
         RED,

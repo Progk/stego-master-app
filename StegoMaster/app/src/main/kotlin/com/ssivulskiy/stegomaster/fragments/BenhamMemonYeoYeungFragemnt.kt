@@ -10,9 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
+import com.ssivulskiy.stegomaster.core.BenhamMemonYeoYeungMethod
 import com.ssivulskiy.stegomaster.core.KoxaJaoMethod
 import com.ssivulskiy.stegomaster.utils.*
-import kotlinx.android.synthetic.main.fragment_koxa_jao.*
+import kotlinx.android.synthetic.main.fragment_benham_memon.*
 import org.jetbrains.anko.support.v4.toast
 import java.io.File
 import java.io.FileOutputStream
@@ -20,17 +21,17 @@ import java.io.FileOutputStream
 /**
  * @author Sivulskiy Sergey
  */
-class KoxaJaoFragment : Fragment() {
+class BenhamMemonYeoYeungFragemnt : Fragment() {
 
     private val LOG_TAG = javaClass.name
 
-    private val FILE_NAME_IN = "snowman.jpg"
-    private val FILE_NAME_OUT = "cars_stego_koxa_jao.jpeg"
+    private val FILE_NAME_IN = "cars.jpg"
+    private val FILE_NAME_OUT = "cars_stego_benham.jpeg"
 
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_koxa_jao, container, false)
+        return inflater!!.inflate(R.layout.fragment_benham_memon, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -50,7 +51,7 @@ class KoxaJaoFragment : Fragment() {
         dir = File(dir, "stego")
 
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_OUT) }
-        val koxaJaoStego = KoxaJaoMethod()
+        val koxaJaoStego = BenhamMemonYeoYeungMethod()
         val msg = koxaJaoStego.decode(fileIn!!)
         val stringMsg = String(msg.toByteArray())
         Log.d(LOG_TAG, stringMsg)
@@ -98,7 +99,7 @@ class KoxaJaoFragment : Fragment() {
         val fileIn = dir.listFiles().find { it.name.equals(FILE_NAME_IN) }
         val fileOut = File(dir, FILE_NAME_OUT)
 
-        val koxaJaoStego = KoxaJaoMethod()
+        val koxaJaoStego = BenhamMemonYeoYeungMethod()
 
 
         koxaJaoStego.code(makeStegoMessage(msg), fileIn!!, fileOut)
@@ -146,10 +147,10 @@ class KoxaJaoFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() : KoxaJaoFragment {
+        fun newInstance() : BenhamMemonYeoYeungFragemnt {
             var args = Bundle()
 
-            var fragment = KoxaJaoFragment()
+            var fragment = BenhamMemonYeoYeungFragemnt()
             fragment.apply {
                 arguments = args
             }
