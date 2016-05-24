@@ -4,18 +4,18 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import com.ssivulskiy.stegomaster.core.base.BaseStegoLsbAlgorithm
 import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class LSBIntervalMethod : IStegoMethod {
-    private val LOG_TAG = javaClass.simpleName
+class LSBIntervalAlgorithm : BaseStegoLsbAlgorithm() {
 
-    private val RED = 0
-    private val GREEN = 1
-    private val BLUE = 2
-
+    //0b1xx - red
+    //0bx1x - green
+    //0bxx1 - blue
     var mComponents = 0b001
+
 
     override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
 
@@ -38,7 +38,7 @@ class LSBIntervalMethod : IStegoMethod {
                 x += nextOffset
 
                 var pixel = bitmap.getPixel(x, y)
-                Log.d(LOG_TAG, "X: $x, Y:$y")
+//                Log.d(LOG_TAG, "X: $x, Y:$y")
 
                 var alpha = Color.alpha(pixel)
                 var red = Color.red(pixel)
@@ -59,7 +59,7 @@ class LSBIntervalMethod : IStegoMethod {
                     colorMap[BLUE] = blue
                 }
 
-                var modif = false
+                var pixelChanged = false
                 for ((key, pix) in colorMap) {
                     if (byteBit == -1) {
                         byte++;
@@ -74,7 +74,7 @@ class LSBIntervalMethod : IStegoMethod {
                     var color = pix
 
                     if (color.getBitAtPos(0) != value)
-                        modif = true
+                        pixelChanged = true
 
                     if (value == 1) {
                         color = color or 1
@@ -103,19 +103,22 @@ class LSBIntervalMethod : IStegoMethod {
                 }
 
 
-                var newPixel = Color.argb(alpha, red, green, blue)
+                var newPixel : Int
 
-//                if (modif)
-//                    newPixel = Color.BLACK
+                if (pixelChanged && mIsShowChangedPixels)
+                    newPixel = Color.BLACK
+                else
+                    newPixel = Color.argb(alpha, red, green, blue)
 
                 bitmap.setPixel(x, y, newPixel)
 
                 val currentPixel = y.times(bitmap.width - 1) + x
                 nextOffset = currentPixel.bitCount()
+
                 if (nextOffset == 0)
                     nextOffset++
 
-                Log.d(LOG_TAG, "Set pixel: $currentPixel. NextOffset: $nextOffset")
+//                Log.d(LOG_TAG, "Set pixel: $currentPixel. NextOffset: $nextOffset")
 
                 if (finish)
                     break@loop
@@ -126,7 +129,7 @@ class LSBIntervalMethod : IStegoMethod {
                 x = 0
             }
 
-            Log.d(LOG_TAG, "NextRowOffset: $nextOffset")
+//            Log.d(LOG_TAG, "NextRowOffset: $nextOffset")
         }
 
         val fOut = FileOutputStream(outFile);
@@ -179,7 +182,7 @@ class LSBIntervalMethod : IStegoMethod {
                         byte = 0
                         byteBit = 7
                         if (msgSize == -1 && msgByte.size == 2) {
-                            msgSize = decodeMsgSize(msgByte)
+                            msgSize = decodeMessageSize(msgByte)
                             msgByte.clear()
                             Log.d(LOG_TAG, "Message size: $msgSize")
                         }
@@ -219,7 +222,7 @@ class LSBIntervalMethod : IStegoMethod {
         return msgByte
     }
 
-    override fun decodeMsgSize(msg: List<Byte>): Int {
+    override fun decodeMessageSize(msg: List<Byte>): Int {
         return calculateMessageLength(msg)
     }
 

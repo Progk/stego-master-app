@@ -4,20 +4,21 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import com.ssivulskiy.stegomaster.core.base.BaseStegoAlgorithm
+import com.ssivulskiy.stegomaster.core.base.IStegoAlgorithm
 import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class BenhamMemonYeoYeungMethod() : IStegoMethod {
+class BenhamMemonYeoYeungAlgorithm() : BaseStegoAlgorithm() {
 
-    private val LOG_TAG = javaClass.simpleName
     val MATRIX_SIZE = 8
 
-    var mCoef1 = Coefficient(6, 2)
+    var mCoef1 = Coefficient(6, 5)
     var mCoef2 = Coefficient(4, 4)
-    var mCoef3 = Coefficient(2, 6)
+    var mCoef3 = Coefficient(5, 6)
 
-    var P = 60
+    var P = 45
     var Pl = 2600
     var Ph = 40
 
@@ -54,7 +55,6 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
     }
 
     override fun code(msgByte : List<Byte>, inFile : File, outFile : File) {
-        val list = mutableListOf<Int>()
         Log.i(LOG_TAG, msgByte.toString())
         val options = BitmapFactory.Options().apply {
             inMutable = true
@@ -76,8 +76,9 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
 
                 var dctCof = DCT(arr)
 
-                if (!isCorrectBlock(dctCof))
+                if (!isCorrectBlock(dctCof)) {
                     continue
+                }
 
                 if (byteBit == -1) {
                     byte++;
@@ -89,38 +90,44 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
 
                 val value = msgByte[byte]
 
-                var cof1 = dctCof[mCoef1.x][mCoef1.y]
-                var cof2 = dctCof[mCoef2.x][mCoef2.y]
-                var cof3 = dctCof[mCoef3.x][mCoef3.y]
+                var cof1 = Math.abs(dctCof[mCoef1.x][mCoef1.y])
+                var cof2 = Math.abs(dctCof[mCoef2.x][mCoef2.y])
+                var cof3 = Math.abs(dctCof[mCoef3.x][mCoef3.y])
 
                 if (value.getBitAtPos(byteBit) == 0.toByte()) { //0
-                   if (cof3 > cof1 || cof3 > cof2) {
-                       val min = Math.min(cof1, cof2)
-                       cof3 = min - P/2
-                       if (cof1 == min)
-                           cof1 += P/2
-                       else
-                           cof2 += P/2
-
-
+                   if (cof3 >= Math.min(cof1, cof2) - P) {
+                        val min = Math.min(cof1, cof2)
+                        cof3 = min - P - 1
+//                        if (cof1 == min)
+//                            cof1 += P/2
+//                       else
+//                            cof2 += P/2
                    }
-                    list.add(0)
-                    Log.i(LOG_TAG, "B:0 C1:$cof1 C2:$cof2 C3:$cof3")
-                    Log.i(LOG_TAG, "${cof3 < Math.min(cof1, cof2)}")
+
+//                    Log.i(LOG_TAG, "B:0 C1:$cof1 C2:$cof2 C3:$cof3")
+//                    Log.i(LOG_TAG, "${cof3 < Math.min(cof1, cof2) - P}")
                 } else { //1
-                    if (cof3 < cof1 || cof3 < cof2) {
+                    if (cof3 <= Math.max(cof1, cof2) + P) {
                         val max = Math.max(cof1, cof2)
-                        cof3 = max + P/2
-                        if (cof1 == max)
-                            cof1 -= P/2
-                        else
-                            cof2 -= P/2
+                        cof3 = max + P + 1
+//                        if (cof1 == max)
+//                            cof1 -= P/2
+//                        else
+//                            cof2 -= P/2
                     }
-                    list.add(1)
-                    Log.i(LOG_TAG, "B:1 C1:$cof1 C2:$cof2 C3:$cof3")
-                    Log.i(LOG_TAG, "${cof3 > Math.max(cof1, cof2)}")
+
+//                    Log.i(LOG_TAG, "B:1 C1:$cof1 C2:$cof2 C3:$cof3")
+//                    Log.i(LOG_TAG, "${cof3 > Math.max(cof1, cof2) + P}")
                 }
 
+                if (dctCof[mCoef1.x][mCoef1.y] < 0)
+                    cof1 *= -1
+
+                if (dctCof[mCoef2.x][mCoef2.y] < 0)
+                    cof1 *= -1
+
+                if (dctCof[mCoef3.x][mCoef3.y] < 0)
+                    cof1 *= -1
 
                 dctCof[mCoef1.x][mCoef1.y] = cof1
                 dctCof[mCoef2.x][mCoef2.y] = cof2
@@ -138,11 +145,16 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
 
 
 
+
                 for (i in 0..stegoColors.size-1) {
                     for (j in 0..stegoColors[i].size-1) {
                         val stegoColor = stegoColors[i][j]
                         val sourcePixel = bitmap.getPixel(x + j, y + i)
                         var newPixel = createStegoPixel(sourcePixel, stegoColor)
+                        if (sourcePixel != newPixel && mIsShowChangedPixels) {
+                            newPixel = Color.BLACK
+                        }
+
                         bitmap.setPixel(x + j, y + i, newPixel)
                     }
                 }
@@ -150,12 +162,15 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
                 byteBit--;
             }
         }
-        Log.i(LOG_TAG, list.toString())
+
+
         val fOut = FileOutputStream(outFile);
         bitmap.compress(mCompressFormat, mCompressQuality, fOut);
         fOut.flush();
         fOut.close();
     }
+
+
 
 
     override fun decode(file : File) : List<Byte> {
@@ -164,7 +179,6 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
         var byte: Byte = 0;
         var byteBit = 7
         var msgSize = -1;
-        val list = mutableListOf<Int>()
         loop@for (y in 0..bitmap.height - 1 step MATRIX_SIZE) {
             for (x in 0..bitmap.width - 1 step MATRIX_SIZE) {
                 val arr = Array2dOfInt(MATRIX_SIZE, MATRIX_SIZE)
@@ -178,12 +192,16 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
 
                 var dctCof = DCT(arr)
 
+                if (!isCorrectBlock(dctCof)) {
+                    continue
+                }
+
                 if (byteBit == -1) {
                     msgByte.add(byte)
                     byte = 0
                     byteBit = 7
                     if (msgSize == -1 && msgByte.size == 2) {
-                        msgSize = decodeMsgSize(msgByte)
+                        msgSize = 9
                         msgByte.clear()
                         Log.d(LOG_TAG, "Message size: $msgSize")
                     }
@@ -194,26 +212,23 @@ class BenhamMemonYeoYeungMethod() : IStegoMethod {
                     break@loop
 
 
-                var cof1 = dctCof[mCoef1.x][mCoef1.y]
-                var cof2 = dctCof[mCoef2.x][mCoef2.y]
-                var cof3 = dctCof[mCoef3.x][mCoef3.y]
+                var cof1 = Math.abs(dctCof[mCoef1.x][mCoef1.y])
+                var cof2 = Math.abs(dctCof[mCoef2.x][mCoef2.y])
+                var cof3 = Math.abs(dctCof[mCoef3.x][mCoef3.y])
 
-                if (cof3 < Math.min(cof1, cof2)) {
-                    list.add(0)
+                if (cof3 < Math.min(cof1, cof2) - P) {
                     byte = byte.setZeroAtPos(byteBit)
                 } else {
-                    list.add(1)
                     byte = byte.setOneAtPos(byteBit)
                 }
 
                 byteBit--;
             }
         }
-        Log.i(LOG_TAG, list.toString())
         return msgByte
     }
 
-    override fun decodeMsgSize(msg: List<Byte>): Int {
+    override fun decodeMessageSize(msg: List<Byte>): Int {
         Log.i(LOG_TAG, msg.toString())
         return calculateMessageLength(msg)
     }

@@ -1,8 +1,10 @@
 package com.ssivulskiy.stegomaster.utils
 
+import android.graphics.Bitmap
+
 fun Array2dOfInt(i: Int, j: Int): Array<IntArray> = Array(i) { IntArray(j) }
 
-fun makeStegoMessage(msg : String) : List<Byte> {
+fun makeStegoMessage(msg: String): List<Byte> {
 
     val l = msg.length.and(0x0000FF00).shr(8).toByte()
     val r = msg.length.and(0x000000FF).toByte()
@@ -14,8 +16,7 @@ fun makeStegoMessage(msg : String) : List<Byte> {
     return msgByte
 }
 
-fun calculateMessageLength(arr : List<Byte>) : Int = arr[0].toInt().and(0x000000FF).shl(8) or arr[1].toInt().and(0x000000FF)
-
+fun calculateMessageLength(arr: List<Byte>): Int = arr[0].toInt().and(0x000000FF).shl(8) or arr[1].toInt().and(0x000000FF)
 
 fun DCT(arr: Array<IntArray>): Array<IntArray> {
     var dctCof = Array2dOfInt(arr.size, arr.size)
@@ -80,27 +81,6 @@ fun reverseDCT(dcpCof: Array<IntArray>): Array<IntArray> {
 
         }
 
-//        var max = Int.MIN_VALUE
-//        for (k in 0..dcpCof[x].size - 1) {
-//            if (Math.abs(arr[x][k]) > max) {
-//                max = Math.abs(arr[x][k])
-//            }
-//        }
-//
-//        if (max > 255) {
-//            for (k in 0..dcpCof[x].size - 1) {
-//
-//                    arr[x][k] = arr[x][k].div(max).times(255)
-//
-//            }
-//        } else {
-//            for (k in 0..dcpCof[x].size - 1) {
-//
-//                arr[x][k] = Math.abs(arr[x][k])
-//
-//            }
-//        }
-
     }
     return arr;
 }
@@ -129,6 +109,26 @@ fun normDCT(arr: Array<IntArray>): Array<IntArray> {
     }
 
     return normArr
+}
+
+
+fun IMAGE_DIFF(bitmapA: Bitmap, bitmapB: Bitmap, norm: Int): Bitmap {
+    var config = bitmapA.config
+    var bitmap = Bitmap.createBitmap(bitmapA.width, bitmapA.height, config)
+    for (i in 0..bitmapA.width - 1) {
+        for (j in 0..bitmapA.height - 1) {
+            val pixA = bitmapA.getPixel(i, j)
+            val pixB = bitmapB.getPixel(i, j)
+            var newPix : Int
+            if (pixA != pixB)
+                newPix = (pixA - pixB) * 128
+            else
+                newPix = pixA
+            bitmap.setPixel(i, j, newPix)
+        }
+    }
+
+    return bitmap
 }
 
 

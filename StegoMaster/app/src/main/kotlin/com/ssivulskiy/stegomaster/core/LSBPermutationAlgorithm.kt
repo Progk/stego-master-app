@@ -1,10 +1,12 @@
 package com.ssivulskiy.stegomaster.core
 
 import android.content.Intent
+import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import com.ssivulskiy.stegomaster.core.base.BaseStegoLsbAlgorithm
 import com.ssivulskiy.stegomaster.utils.calculateMessageLength
 import com.ssivulskiy.stegomaster.utils.getBitAtPos
 import com.ssivulskiy.stegomaster.utils.setOneAtPos
@@ -12,19 +14,13 @@ import com.ssivulskiy.stegomaster.utils.setZeroAtPos
 import java.io.File
 import java.io.FileOutputStream
 
-class LSBPermutationMethod : IStegoMethod {
-
-    private val LOG_TAG = javaClass.simpleName
-
-    private val RED = 0
-    private val GREEN = 1
-    private val BLUE = 2
-
+class LSBPermutationAlgorithm : BaseStegoLsbAlgorithm() {
 
     //0b100 - red
     //0b010 - green
     //0b001 - blue
     var mComponents = 0b001
+
 
     override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
 
@@ -39,8 +35,6 @@ class LSBPermutationMethod : IStegoMethod {
             var x = Math.floor(i * 15 / bitmap.width.toDouble()).toInt()
             var y = i.times(15) % bitmap.height
             var pixel = bitmap.getPixel(x, y)
-
-            Log.d(LOG_TAG, "X: $x, Y:$y")
 
             var alpha = Color.alpha(pixel)
             var red = Color.red(pixel)
@@ -61,11 +55,12 @@ class LSBPermutationMethod : IStegoMethod {
                 color = blue
             }
 
-
             val value = msgByte[i / 8].getBitAtPos(i % 8).toInt()
-            var modif = false
+
+            var pixelChanged = false
+
             if (color.getBitAtPos(0) != value)
-                modif = true
+                pixelChanged = true
 
             if (value == 1) {
                 color = color or 1
@@ -85,9 +80,12 @@ class LSBPermutationMethod : IStegoMethod {
                 }
             }
 
-            var newPixel = Color.argb(alpha, red, green, blue)
-//            if (modif)
-//                newPixel = Color.BLACK
+            var newPixel : Int
+
+            if (pixelChanged && mIsShowChangedPixels)
+                newPixel = Color.BLACK
+            else
+                newPixel = Color.argb(alpha, red, green, blue)
 
             bitmap.setPixel(x, y, newPixel)
 
@@ -115,8 +113,6 @@ class LSBPermutationMethod : IStegoMethod {
 
             var pixel = bitmap.getPixel(x, y)
 
-            Log.d(LOG_TAG, "X: $x, Y:$y")
-
             var alpha = Color.alpha(pixel)
             var red = Color.red(pixel)
             var green = Color.green(pixel)
@@ -136,9 +132,8 @@ class LSBPermutationMethod : IStegoMethod {
                 msgByte.add(byte)
                 byte = 0
                 if (msgSize == -1 && msgByte.size == 2) {
-                    msgSize = decodeMsgSize(msgByte)
+                    msgSize = decodeMessageSize(msgByte)
                     msgByte.clear()
-                    Log.d(LOG_TAG, "Message size: $msgSize")
                 }
 
             }
@@ -158,7 +153,7 @@ class LSBPermutationMethod : IStegoMethod {
         return msgByte
     }
 
-    override fun decodeMsgSize(msg: List<Byte>): Int {
+    override fun decodeMessageSize(msg: List<Byte>): Int {
         return calculateMessageLength(msg)
     }
 

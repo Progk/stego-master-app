@@ -4,19 +4,21 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import com.ssivulskiy.stegomaster.core.base.BaseStegoAlgorithm
 import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class QuantizationMethod() : IStegoMethod {
+class QuantizationAlgorithm() : BaseStegoAlgorithm() {
 
-    private val LOG_TAG = javaClass.simpleName
     private val QUANT_TABLE_SIZE = 255 * 2 + 1
 
-    var mQuantizationTable = Array(QUANT_TABLE_SIZE, { 0 })
+    private var mQuantizationTable = Array(QUANT_TABLE_SIZE, { 0 })
+
+    var mSecretWord = "stegoqwerty"
 
     init {
-        val s = "awerty1234stegoqwerty1234stegoqwerty1234stegoqwerty1234steg75a".toByteArray()
+        val s = "awerty1234${mSecretWord}5678${mSecretWord}9012${mSecretWord}3456steg78a".toByteArray()
         var k = 0
         for (i in 0..mQuantizationTable.size - 1) {
             mQuantizationTable[i] = s[i % 8].getBitAtPos(k).toInt()
@@ -72,36 +74,36 @@ class QuantizationMethod() : IStegoMethod {
                     }
 
                     if (offsetL < offsetR) {
-                        var diff = offsetL
-                        while (diff > 0) {
+                        var offset = offsetL
+                        while (offset > 0) {
                             if (blueB + 1 < 255) {
                                 blueB++
                             } else {
                                 blueA--
                             }
-                            diff--;
+                            offset--;
                         }
                     } else {
-                        var diff = offsetR
-                        while (diff > 0) {
+                        var offset = offsetR
+                        while (offset > 0) {
                             if (blueA + 1 < 255)
                                 blueA++
                             else
                                 blueB++
-                            diff--
+                            offset--
                         }
                     }
 
                     pixelA = Color.argb(Color.alpha(pixelA), Color.red(pixelA), Color.green(pixelA), blueA)
                     pixelB = Color.argb(Color.alpha(pixelB), Color.red(pixelB), Color.green(pixelB), blueB)
 
-//                    if (pixelA != bitmap.getPixel(x, y)) {
-//                        pixelA = Color.BLACK
-//                    }
-//
-//                    if (pixelB != bitmap.getPixel(x + 1, y)) {
-//                        pixelB = Color.BLACK
-//                    }
+                    if (pixelA != bitmap.getPixel(x, y) && mIsShowChangedPixels) {
+                        pixelA = Color.BLACK
+                    }
+
+                    if (pixelB != bitmap.getPixel(x + 1, y) && mIsShowChangedPixels) {
+                        pixelB = Color.BLACK
+                    }
 
                     bitmap.setPixel(x, y, pixelA)
                     bitmap.setPixel(x + 1, y, pixelB)
@@ -113,6 +115,7 @@ class QuantizationMethod() : IStegoMethod {
         }
 
         val fOut = FileOutputStream(outFile);
+
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
         fOut.flush();
         fOut.close();
@@ -135,9 +138,9 @@ class QuantizationMethod() : IStegoMethod {
                     byte = 0
                     byteBit = 7
                     if (msgSize == -1 && msgByte.size == 2) {
-                        msgSize = decodeMsgSize(msgByte)
+                        msgSize = decodeMessageSize(msgByte)
                         msgByte.clear()
-                        Log.d(LOG_TAG, "Message size: $msgSize")
+//                        Log.d(LOG_TAG, "Message size: $msgSize")
                     }
 
                     if (msgSize != -1 && msgSize == msgByte.size)
@@ -165,7 +168,7 @@ class QuantizationMethod() : IStegoMethod {
         return msgByte
     }
 
-    override fun decodeMsgSize(msg: List<Byte>): Int {
+    override fun decodeMessageSize(msg: List<Byte>): Int {
         return calculateMessageLength(msg)
     }
 

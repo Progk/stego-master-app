@@ -4,18 +4,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import com.ssivulskiy.stegomaster.core.base.BaseStegoAlgorithm
 import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-class KoxaJaoMethod() : IStegoMethod {
-
-    private val LOG_TAG = javaClass.simpleName
+class KoxaJaoAlgorithm() : BaseStegoAlgorithm() {
 
     var mCoef1 = Coefficient(3, 4)
     var mCoef2 = Coefficient(4, 3)
 
-    var P = 60
+    var P = 45
 
     var mMatrixSize = 8 //N
 
@@ -27,7 +26,7 @@ class KoxaJaoMethod() : IStegoMethod {
 
     override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
         val list = mutableListOf<Int>()
-        Log.i(LOG_TAG, msgByte.toString())
+//        Log.i(LOG_TAG, msgByte.toString())
         val options = BitmapFactory.Options().apply {
             inMutable = true
         }
@@ -91,12 +90,12 @@ class KoxaJaoMethod() : IStegoMethod {
                 dctCof[mCoef1.x][mCoef1.y] = cof1 * factor1
                 dctCof[mCoef2.x][mCoef2.y] = cof2 * factor2
 
-                Log.i(LOG_TAG, "C1: ${dctCof[mCoef1.x][mCoef1.y]} C2 :${dctCof[mCoef2.x][mCoef2.y]} Bit: ${value.getBitAtPos(byteBit)}")
-                if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) > Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
-                    Log.i(LOG_TAG, "0 true")
-                } else if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) < Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
-                    Log.i(LOG_TAG, "1 false")
-                }
+//                Log.i(LOG_TAG, "C1: ${dctCof[mCoef1.x][mCoef1.y]} C2 :${dctCof[mCoef2.x][mCoef2.y]} Bit: ${value.getBitAtPos(byteBit)}")
+//                if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) > Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
+//                    Log.i(LOG_TAG, "0 true")
+//                } else if (Math.abs(dctCof[mCoef1.x][mCoef1.y]) < Math.abs(dctCof[mCoef2.x][mCoef2.y])) {
+//                    Log.i(LOG_TAG, "1 false")
+//                }
 
                 val stegoColors = normDCT(reverseDCT(dctCof))
 
@@ -106,9 +105,11 @@ class KoxaJaoMethod() : IStegoMethod {
                         val stegoColor = stegoColors[i][j]
                         val sourcePixel = bitmap.getPixel(x + j, y + i)
                         var newPixel = createStegoPixel(sourcePixel, stegoColor)
-                        //                        if (sourcePixel != newPixel) {
-                        //                            newPixel = Color.BLACK
-                        //                        }
+
+                        if (sourcePixel != newPixel && mIsShowChangedPixels) {
+                            newPixel = Color.BLACK
+                        }
+
                         bitmap.setPixel(x + j, y + i, newPixel)
                     }
                 }
@@ -116,7 +117,7 @@ class KoxaJaoMethod() : IStegoMethod {
                 byteBit--;
             }
         }
-        Log.i(LOG_TAG, list.toString())
+//        Log.i(LOG_TAG, list.toString())
 
         val fOut = FileOutputStream(outFile);
         bitmap.compress(mCompressFormat, mCompressQuality, fOut);
@@ -150,9 +151,9 @@ class KoxaJaoMethod() : IStegoMethod {
                     byte = 0
                     byteBit = 7
                     if (msgSize == -1 && msgByte.size == 2) {
-                        msgSize = decodeMsgSize(msgByte)
+                        msgSize = decodeMessageSize(msgByte)
                         msgByte.clear()
-                        Log.d(LOG_TAG, "Message size: $msgSize")
+//                        Log.d(LOG_TAG, "Message size: $msgSize")
                     }
 
                 }
@@ -175,7 +176,7 @@ class KoxaJaoMethod() : IStegoMethod {
         return msgByte
     }
 
-    override fun decodeMsgSize(msg: List<Byte>): Int {
+    override fun decodeMessageSize(msg: List<Byte>): Int {
         Log.i(LOG_TAG, msg.toString())
         return calculateMessageLength(msg)
     }
@@ -220,6 +221,7 @@ class KoxaJaoMethod() : IStegoMethod {
             }
         }
     }
+
 
     data class Coefficient(val x: Int, val y: Int);
 

@@ -1,13 +1,13 @@
-package com.ssivulskiy.stegomaster.core
+package com.ssivulskiy.stegomaster.core.base
 
 import java.io.File
 
 
-interface IStegoMethod {
+interface IStegoAlgorithm {
 
     fun code(msgByte : List<Byte>, inFile : File, outFile : File)
 
     fun decode(file : File) : List<Byte>
 
-    fun decodeMsgSize(msg : List<Byte>) : Int
+    fun decodeMessageSize(msg : List<Byte>) : Int
 }

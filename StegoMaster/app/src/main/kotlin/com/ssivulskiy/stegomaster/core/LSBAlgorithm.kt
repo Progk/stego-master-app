@@ -4,26 +4,22 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
+import com.ssivulskiy.stegomaster.core.base.BaseStegoLsbAlgorithm
 import com.ssivulskiy.stegomaster.utils.*
 import java.io.File
 import java.io.FileOutputStream
 
-open class LSBMethod() : IStegoMethod {
-
-    private val LOG_TAG = javaClass.simpleName
-
-    private val RED = 0
-    private val GREEN = 1
-    private val BLUE = 2
-
+open class LSBAlgorithm() : BaseStegoLsbAlgorithm() {
 
     //0b1xx - red
     //0bx1x - green
     //0bxx1 - blue
     var mComponents = 0b001
 
+
+
+
     override fun code(msgByte : List<Byte>, inFile : File, outFile : File) {
-//        val msgByte = makeStegoMessage(msg)
 
         val options = BitmapFactory.Options().apply {
             inMutable = true
@@ -39,14 +35,12 @@ open class LSBMethod() : IStegoMethod {
             for (x in 0..bitmap.width - 1) {
 
                 var pixel = bitmap.getPixel(x, y)
-                Log.d(LOG_TAG, "X: $x, Y:$y")
 
                 var alpha = Color.alpha(pixel)
                 var red = Color.red(pixel)
                 var green = Color.green(pixel)
                 var blue = Color.blue(pixel)
 
-//                val colorArray = arrayOf(red, green, blue)
                 val colorMap = mutableMapOf<Int, Int>()
 
                 if (mComponents.shr(2).and(0x00000001) == 1) {
@@ -61,7 +55,8 @@ open class LSBMethod() : IStegoMethod {
                     colorMap[BLUE] = blue
                 }
 
-                var modif = false
+                var pixelChanged = false
+
                 for ((key, pix) in colorMap) {
                     if (byteBit == -1) {
                         byte++;
@@ -76,7 +71,7 @@ open class LSBMethod() : IStegoMethod {
                     var color = pix
 
                     if (color.getBitAtPos(0) != value)
-                        modif = true
+                        pixelChanged = true
 
                     if (value == 1) {
                         color = color or 1
@@ -85,8 +80,6 @@ open class LSBMethod() : IStegoMethod {
                     }
 
                     colorMap[key] = color
-
-
 
                     byteBit--
                 }
@@ -105,10 +98,12 @@ open class LSBMethod() : IStegoMethod {
                 }
 
 
-                var newPixel = Color.argb(alpha, red, green, blue)
+                var newPixel : Int
 
-                if (modif)
+                if (pixelChanged && mIsShowChangedPixels)
                     newPixel = Color.BLACK
+                else
+                    newPixel = Color.argb(alpha, red, green, blue)
 
                 bitmap.setPixel(x, y, newPixel)
 
@@ -142,8 +137,6 @@ open class LSBMethod() : IStegoMethod {
                 var green = Color.green(pixel)
                 var blue = Color.blue(pixel)
 
-//                val colorArray = arrayOf(red, green, blue)
-
                 val colorList = mutableListOf<Int>()
 
                 if (mComponents.shr(2).and(0x00000001) == 1) {
@@ -164,9 +157,8 @@ open class LSBMethod() : IStegoMethod {
                         byte = 0
                         byteBit = 7
                         if (msgSize == -1 && msgByte.size == 2) {
-                            msgSize = decodeMsgSize(msgByte)
+                            msgSize = decodeMessageSize(msgByte)
                             msgByte.clear()
-                            Log.d(LOG_TAG, "Message size: $msgSize")
                         }
 
                     }
@@ -180,7 +172,6 @@ open class LSBMethod() : IStegoMethod {
                         byte = byte.setOneAtPos(byteBit)
                     }
 
-
                     byteBit--;
                 }
 
@@ -190,7 +181,7 @@ open class LSBMethod() : IStegoMethod {
         return msgByte
     }
 
-    override fun decodeMsgSize(msg: List<Byte>): Int {
+    override fun decodeMessageSize(msg: List<Byte>): Int {
         return calculateMessageLength(msg)
     }
 
