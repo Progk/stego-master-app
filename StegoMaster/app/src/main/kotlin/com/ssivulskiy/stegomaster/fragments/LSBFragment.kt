@@ -126,8 +126,24 @@ class LSBFragment : BaseStegoFragment() {
             return
         }
 
-        val msg = mStegoAlgorithm.decode(getBitmap())
-
+        var msg = emptyList<Byte>()
+        val progress = indeterminateProgressDialog(getString(R.string.message_wait), getString(R.string.image_processing))
+        async() {
+            uiThread {
+                progress.show()
+            }
+            try {
+                msg = mStegoAlgorithm.decode(getBitmap())
+            } catch (e : Exception) {
+                uiThread {
+                    toast(getString(R.string.can_not_decode_file))
+                }
+            } finally {
+                uiThread {
+                    progress.dismiss()
+                }
+            }
+        }
 
         val stringMsg = String(msg.toByteArray())
 
@@ -157,17 +173,20 @@ class LSBFragment : BaseStegoFragment() {
 
         val fileOut = File(context.cacheDir, mFileOut)
 
-        val progress = indeterminateProgressDialog("a", "b")
+
+        val progress = indeterminateProgressDialog(getString(R.string.message_wait), getString(R.string.image_processing))
         async() {
             uiThread {
                 progress.show()
             }
-
             try {
                 getAlgorithm().code(makeStegoMessage(mMessage), getBitmap(), fileOut)
+                uiThread {
+                    Picasso.with(context).load(fileOut).into(imageView)
+                }
             } catch (e : Exception) {
                 uiThread {
-                    toast("Can not decode file")
+                    toast(getString(R.string.can_not_decode_file))
                 }
             } finally {
                 uiThread {
@@ -177,8 +196,6 @@ class LSBFragment : BaseStegoFragment() {
         }
 
 
-
-        Picasso.with(context).load(fileOut).into(imageView)
 
 
     }

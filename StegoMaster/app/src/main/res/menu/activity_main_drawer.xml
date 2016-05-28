@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-
         <item
             android:id="@+id/nav_lsb"
             android:icon="@drawable/ic_menu_slideshow"
@@ -19,19 +17,18 @@
             android:title="@string/lsb_interval_method"/>
 
         <item
+            android:id="@+id/nav_quant"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/quantization_method"/>
+
+        <item
             android:id="@+id/nav_koxa_jao"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/koxa_jao_method"/>
 
         <item
-            android:id="@+id/nav_quant"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/quantization_method"/>
-        <item
             android:id="@+id/benham_memon_yeo_yeung_method"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/benham_memon_yeo_yeung_method"/>
-
-    </group>
 
 </menu>

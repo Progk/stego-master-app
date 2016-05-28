@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StegoMaster</string>
+    <string name="action_settings">Настройки</string>
+    <string name="benham_memon_yeo_yeung_method">Бенгам–Мемон–Эо–Юнг </string>
+    <string name="can_not_decode_file">Невозможно раскодировать файл</string>
+    <string name="image_processing">Обработка изображения</string>
+    <string name="input_text_msg">Введите текст</string>
+    <string name="koxa_jao_method">Кох–Жао</string>
+    <string name="lsb_interval_method">Псевдослучайный интервал</string>
+    <string name="lsb_method">Наименее значащий бит</string>
+    <string name="lsb_perm_method">Перестановка</string>
+    <string name="message_wait">Подождите</string>
+    <string name="navigation_drawer_close"></string>
+    <string name="open_image">Открыть изображение</string>
+    <string name="quantization_method">Квантование</string>
+    <string name="save_image">Сохранить изображение</string>
+    <string name="secret_message">Секретное сообщение</string>
+    <string name="select_colors">Выберите цвета</string>
+    <string name="select_colors_component">Выберите компоненты цвета для скрытия:</string>
+    <string name="select_image">Выберите изображение</string>
+    <string name="code">Закодировать</string>
+    <string name="decode">Декодировать</string>
+
+</resources>

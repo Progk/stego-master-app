@@ -5,12 +5,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="lsb_method">LSB Method</string>
-    <string name="lsb_perm_method">LSB Permutation Method</string>
-    <string name="koxa_jao_method">Koxa Jao Method</string>
-    <string name="quantization_method">Quantization Method</string>
-    <string name="lsb_interval_method">LSB Interval Method</string>
-    <string name="benham_memon_yeo_yeung_method">Benham Memon Yeo Yeung Method</string>
+    <string name="lsb_method">LSB Algorithm</string>
+    <string name="lsb_perm_method">LSB Permutation Algorithm</string>
+    <string name="koxa_jao_method">Koxa Jao Algorithm</string>
+    <string name="quantization_method">Quantization Algorithm</string>
+    <string name="lsb_interval_method">LSB Interval Algorithm</string>
+    <string name="benham_memon_yeo_yeung_method">Benham-Memon-Yeo-Yeung Algorithm</string>
     <string name="secret_message">Secret message</string>
     <string name="select_colors_component">Select colors components:</string>
     <string name="input_symbols">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.,@$?</string>
@@ -19,6 +19,12 @@
     <string name="save_image">Save image</string>
     <string name="select_image">Select image</string>
     <string name="input_text_msg">Input text</string>
+    <string name="message_wait">Wait</string>
+    <string name="image_processing">Image processing..</string>
+    <string name="can_not_decode_file">Can not decode file</string>
+    <string name="code">Code</string>
+    <string name="decode">Decode</string>
+
 
 
 </resources>
