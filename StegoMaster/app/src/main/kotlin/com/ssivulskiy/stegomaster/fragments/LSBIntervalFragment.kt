@@ -1,5 +1,6 @@
 package com.ssivulskiy.stegomaster.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
+import com.ssivulskiy.stegomaster.core.LSBAlgorithm
 import com.ssivulskiy.stegomaster.core.LSBIntervalAlgorithm
 import com.ssivulskiy.stegomaster.fragments.base.BaseStegoFragment
 import com.ssivulskiy.stegomaster.utils.makeStegoMessage
@@ -83,6 +85,17 @@ class LSBIntervalFragment : BaseStegoFragment() {
 
     }
 
+    fun getAlgorithm() : LSBIntervalAlgorithm {
+        return mStegoAlgorithm as LSBIntervalAlgorithm
+    }
+
+    override fun loadImage(uri: Uri) {
+        Picasso.with(context).load(uri).into(imageView)
+    }
+
+    override fun calculateSecretImageLength() : Int {
+        return 0
+    }
 
     companion object {
         fun newInstance() : LSBIntervalFragment {

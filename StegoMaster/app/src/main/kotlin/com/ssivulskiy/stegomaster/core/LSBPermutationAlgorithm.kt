@@ -21,6 +21,10 @@ class LSBPermutationAlgorithm : BaseStegoLsbAlgorithm() {
     //0b001 - blue
     var mComponents = 0b001
 
+    override fun code(msgByte : List<Byte>, bitmap : Bitmap, outFile : File) {
+
+    }
+
 
     override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
 
@@ -97,6 +101,10 @@ class LSBPermutationAlgorithm : BaseStegoLsbAlgorithm() {
         fOut.close();
     }
 
+
+    override fun decode(bitmap: Bitmap): List<Byte> {
+        throw UnsupportedOperationException()
+    }
 
     override fun decode(file: File): List<Byte> {
         var bitmap = BitmapFactory.decodeFile(file.absolutePath)

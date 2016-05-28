@@ -38,6 +38,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'org.xdty.preference:color-picker:0.0.4'
 }
 
 buildscript {

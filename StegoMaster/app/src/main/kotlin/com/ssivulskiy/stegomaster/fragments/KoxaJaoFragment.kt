@@ -1,5 +1,6 @@
 package com.ssivulskiy.stegomaster.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
 import com.ssivulskiy.stegomaster.core.KoxaJaoAlgorithm
+import com.ssivulskiy.stegomaster.core.LSBAlgorithm
 import com.ssivulskiy.stegomaster.fragments.base.BaseStegoFragment
 import com.ssivulskiy.stegomaster.utils.makeStegoMessage
 import kotlinx.android.synthetic.main.fragment_koxa_jao.*
@@ -84,6 +86,18 @@ class KoxaJaoFragment : BaseStegoFragment() {
         mStegoAlgorithm.code(makeStegoMessage(mMessage), fileIn!!, fileOut)
 
         Picasso.with(context).load(fileOut).into(imageView)
+    }
+
+    fun getAlgorithm() : KoxaJaoAlgorithm {
+        return mStegoAlgorithm as KoxaJaoAlgorithm
+    }
+
+    override fun calculateSecretImageLength() : Int {
+        return 0
+    }
+
+    override fun loadImage(uri: Uri) {
+        Picasso.with(context).load(uri).into(imageView)
     }
 
     companion object {

@@ -28,6 +28,10 @@ class QuantizationAlgorithm() : BaseStegoAlgorithm() {
 
     }
 
+    override fun code(msgByte : List<Byte>, bitmap : Bitmap, outFile : File) {
+
+    }
+
     override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
         val options = BitmapFactory.Options().apply {
             inMutable = true
@@ -166,6 +170,10 @@ class QuantizationAlgorithm() : BaseStegoAlgorithm() {
             }
         }
         return msgByte
+    }
+
+    override fun decode(bitmap: Bitmap): List<Byte> {
+        throw UnsupportedOperationException()
     }
 
     override fun decodeMessageSize(msg: List<Byte>): Int {

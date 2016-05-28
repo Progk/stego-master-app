@@ -1,18 +1,37 @@
 package com.ssivulskiy.stegomaster.fragments
 
+import android.app.Activity
+import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.support.v4.view.MenuItemCompat
+import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
 import com.ssivulskiy.stegomaster.core.LSBAlgorithm
 import com.ssivulskiy.stegomaster.fragments.base.BaseStegoFragment
+import com.ssivulskiy.stegomaster.utils.bitCount
+import com.ssivulskiy.stegomaster.utils.getBitAtPos
 import com.ssivulskiy.stegomaster.utils.makeStegoMessage
-import kotlinx.android.synthetic.main.fragment_lsb_permutation.*
+import com.ssivulskiy.stegomaster.view.ColorPickerVIew
+import kotlinx.android.synthetic.main.fragment_lsb.*
+import org.jetbrains.anko.AlertDialogBuilder
+import org.jetbrains.anko.async
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.support.v4.alert
+import org.jetbrains.anko.support.v4.indeterminateProgressDialog
+import org.jetbrains.anko.support.v4.progressDialog
 import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.uiThread
+import org.xdty.preference.colorpicker.ColorPickerDialog
+import org.xdty.preference.colorpicker.ColorPickerSwatch
 import java.io.File
 
 /**
@@ -22,6 +41,10 @@ class LSBFragment : BaseStegoFragment() {
 
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -32,7 +55,12 @@ class LSBFragment : BaseStegoFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mStegoAlgorithm = LSBAlgorithm()
-        mFileOut = "cars_lsb_simple.png"
+
+        Picasso.with(context).load(mDefaultImage).into(imageView)
+
+        select_colors_container.onClick {
+            showColorDialog()
+        }
 
         codeButton.setOnClickListener({
             codeButtonClick()
@@ -56,13 +84,50 @@ class LSBFragment : BaseStegoFragment() {
 
     }
 
+
+    private fun showColorDialog() {
+        val colorView = ColorPickerVIew(activity)
+        val dialog = AlertDialog.Builder(activity).apply {
+            setTitle(R.string.select_colors_component)
+            setView(colorView)
+            setPositiveButton(android.R.string.ok) { dialog, which ->
+
+            }
+        }
+        val alertDialog = dialog.create()
+        alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (colorView.getSelectedColors() == 0) {
+                toast(R.string.select_colors)
+                return@setOnClickListener
+            } else {
+                getAlgorithm().mComponents = colorView.getSelectedColors()
+                setColorVisible(circle_red, getAlgorithm().mComponents.getBitAtPos(2) == 1)
+                setColorVisible(circle_green, getAlgorithm().mComponents.getBitAtPos(1) == 1)
+                setColorVisible(circle_blue, getAlgorithm().mComponents.getBitAtPos(0) == 1)
+                alertDialog.dismiss()
+            }
+        }
+
+    }
+
+    private fun setColorVisible(view : View, isVisible : Boolean) {
+        if (isVisible)
+            view.visibility = View.VISIBLE
+        else
+            view.visibility = View.GONE
+    }
+
+
     private fun decodeButtonClick() {
-        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        dir = File(dir, "stego")
 
-        val fileIn = dir.listFiles().find { it.name.equals(mFileOut) }
+        if (mInImageUri == null) {
+            toast(R.string.select_image)
+            return
+        }
 
-        val msg = mStegoAlgorithm.decode(fileIn!!)
+        val msg = mStegoAlgorithm.decode(getBitmap())
+
 
         val stringMsg = String(msg.toByteArray())
 
@@ -78,24 +143,81 @@ class LSBFragment : BaseStegoFragment() {
 
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
 
-        dir = File(dir, "stego")
+        if (mInImageUri == null) {
+            toast(R.string.select_image)
+            return
+        }
 
-        val fileIn = dir.listFiles().find { it.name.equals(mFileIn) }
-        val fileOut = File(dir, mFileOut)
+        if (TextUtils.isEmpty(secret_message_text.text)) {
+            secret_message_text.error = getString(R.string.input_text_msg)
+            return
+        }
+
+        mMessage = secret_message_text.text.toString()
+
+        val fileOut = File(context.cacheDir, mFileOut)
+
+        val progress = indeterminateProgressDialog("a", "b")
+        async() {
+            uiThread {
+                progress.show()
+            }
+
+            try {
+                getAlgorithm().code(makeStegoMessage(mMessage), getBitmap(), fileOut)
+            } catch (e : Exception) {
+                uiThread {
+                    toast("Can not decode file")
+                }
+            } finally {
+                uiThread {
+                    progress.dismiss()
+                }
+            }
+        }
 
 
-        mStegoAlgorithm.code(makeStegoMessage(mMessage), fileIn!!, fileOut)
 
         Picasso.with(context).load(fileOut).into(imageView)
 
 
     }
 
+    fun getAlgorithm() : LSBAlgorithm {
+        return mStegoAlgorithm as LSBAlgorithm
+    }
+
+
+    override fun calculateSecretImageLength() : Int {
+        val bitInPixel = getAlgorithm().mComponents.bitCount()
+        return mImageWidth * mImageHight / bitInPixel / 8 - 2 - 20
+
+    }
+
+    override fun loadImage(uri: Uri) {
+        Picasso.with(context).load(uri).into(imageView)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                SELECT_PHOTO_REQUEST -> {
+                    val selectedImage = data?.data
+                    val inputStream = activity.contentResolver.openInputStream(selectedImage)
+                    Picasso.with(context).load(selectedImage).into(imageView)
+                }
+            }
+        }
+    }
+
     companion object {
         fun newInstance() : LSBFragment {
-            var args = Bundle()
+            val args = Bundle()
 
-            var fragment = LSBFragment()
+            val fragment = LSBFragment()
             fragment.apply {
                 arguments = args
             }
@@ -103,5 +225,7 @@ class LSBFragment : BaseStegoFragment() {
             return fragment
         }
     }
+
+
 
 }

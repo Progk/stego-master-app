@@ -17,16 +17,19 @@ open class LSBAlgorithm() : BaseStegoLsbAlgorithm() {
     var mComponents = 0b001
 
 
-
+    override fun code(msgByte : List<Byte>, bitmap : Bitmap, outFile : File) {
+        codeImage(msgByte, bitmap, outFile)
+    }
 
     override fun code(msgByte : List<Byte>, inFile : File, outFile : File) {
-
         val options = BitmapFactory.Options().apply {
             inMutable = true
         }
-
         var bitmap = BitmapFactory.decodeFile(inFile.absolutePath, options)
+        code(msgByte, bitmap, outFile)
+    }
 
+    private fun codeImage(msgByte : List<Byte>, bitmap: Bitmap, outFile : File) {
         var byte = 0;
         var byteBit = 7
         var finish = false
@@ -116,12 +119,18 @@ open class LSBAlgorithm() : BaseStegoLsbAlgorithm() {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
         fOut.flush();
         fOut.close();
+    }
 
+    override fun decode(bitmap: Bitmap): List<Byte> {
+        return decodeImage(bitmap)
     }
 
     override fun decode(file : File) : List<Byte> {
         var bitmap = BitmapFactory.decodeFile(file.absolutePath)
+        return decodeImage(bitmap)
+    }
 
+    fun decodeImage(bitmap: Bitmap) : List<Byte> {
         val msgByte = mutableListOf<Byte>()
         var byte: Byte = 0;
         var byteBit = 7

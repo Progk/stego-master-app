@@ -24,6 +24,10 @@ class KoxaJaoAlgorithm() : BaseStegoAlgorithm() {
 
     var mCompressQuality = 100
 
+    override fun code(msgByte : List<Byte>, bitmap : Bitmap, outFile : File) {
+
+    }
+
     override fun code(msgByte: List<Byte>, inFile: File, outFile: File) {
         val list = mutableListOf<Int>()
 //        Log.i(LOG_TAG, msgByte.toString())
@@ -125,6 +129,10 @@ class KoxaJaoAlgorithm() : BaseStegoAlgorithm() {
         fOut.close();
     }
 
+
+    override fun decode(bitmap: Bitmap): List<Byte> {
+        throw UnsupportedOperationException()
+    }
 
     override fun decode(file: File): List<Byte> {
         var bitmap = BitmapFactory.decodeFile(file.absolutePath)

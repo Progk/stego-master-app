@@ -54,6 +54,10 @@ class BenhamMemonYeoYeungAlgorithm() : BaseStegoAlgorithm() {
         return countBit / 8
     }
 
+    override fun code(msgByte : List<Byte>, bitmap : Bitmap, outFile : File) {
+
+    }
+
     override fun code(msgByte : List<Byte>, inFile : File, outFile : File) {
         Log.i(LOG_TAG, msgByte.toString())
         val options = BitmapFactory.Options().apply {
@@ -171,7 +175,9 @@ class BenhamMemonYeoYeungAlgorithm() : BaseStegoAlgorithm() {
     }
 
 
-
+    override fun decode(bitmap: Bitmap): List<Byte> {
+        throw UnsupportedOperationException()
+    }
 
     override fun decode(file : File) : List<Byte> {
         var bitmap = BitmapFactory.decodeFile(file.absolutePath)

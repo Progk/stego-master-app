@@ -11,6 +11,14 @@
     <string name="quantization_method">Quantization Method</string>
     <string name="lsb_interval_method">LSB Interval Method</string>
     <string name="benham_memon_yeo_yeung_method">Benham Memon Yeo Yeung Method</string>
+    <string name="secret_message">Secret message</string>
+    <string name="select_colors_component">Select colors components:</string>
+    <string name="input_symbols">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.,@$?</string>
+    <string name="select_colors">Select colors!</string>
+    <string name="open_image">Open image</string>
+    <string name="save_image">Save image</string>
+    <string name="select_image">Select image</string>
+    <string name="input_text_msg">Input text</string>
 
 
 </resources>

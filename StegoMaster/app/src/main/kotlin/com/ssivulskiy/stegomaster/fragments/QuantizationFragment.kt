@@ -1,6 +1,7 @@
 package com.ssivulskiy.stegomaster.fragments
 
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
+import com.ssivulskiy.stegomaster.core.LSBAlgorithm
 import com.ssivulskiy.stegomaster.core.QuantizationAlgorithm
 import com.ssivulskiy.stegomaster.fragments.base.BaseStegoFragment
 import com.ssivulskiy.stegomaster.utils.*
@@ -84,6 +86,18 @@ class QuantizationFragment : BaseStegoFragment() {
 
         Picasso.with(context).load(fileOut).into(imageView)
 
+    }
+
+    fun getAlgorithm() : QuantizationAlgorithm {
+        return mStegoAlgorithm as QuantizationAlgorithm
+    }
+
+    override fun loadImage(uri: Uri) {
+        Picasso.with(context).load(uri).into(imageView)
+    }
+
+    override fun calculateSecretImageLength() : Int {
+        return 0
     }
 
 

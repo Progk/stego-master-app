@@ -1,5 +1,6 @@
 package com.ssivulskiy.stegomaster.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -10,6 +11,7 @@ import com.squareup.picasso.Picasso
 import com.ssivulskiy.stegomaster.R
 import com.ssivulskiy.stegomaster.core.BenhamMemonYeoYeungAlgorithm
 import com.ssivulskiy.stegomaster.core.KoxaJaoAlgorithm
+import com.ssivulskiy.stegomaster.core.LSBAlgorithm
 import com.ssivulskiy.stegomaster.fragments.base.BaseStegoFragment
 import com.ssivulskiy.stegomaster.utils.makeStegoMessage
 import kotlinx.android.synthetic.main.fragment_benham_memon.*
@@ -85,6 +87,18 @@ class BenhamMemonYeoYeungFragemnt : BaseStegoFragment() {
         mStegoAlgorithm.code(makeStegoMessage(mMessage), fileIn!!, fileOut)
 
         Picasso.with(context).load(fileOut).into(imageView)
+    }
+
+    fun getAlgorithm() : BenhamMemonYeoYeungAlgorithm {
+        return mStegoAlgorithm as BenhamMemonYeoYeungAlgorithm
+    }
+
+    override fun calculateSecretImageLength() : Int {
+        return 0
+    }
+
+    override fun loadImage(uri: Uri) {
+        Picasso.with(context).load(uri).into(imageView)
     }
 
     companion object {
